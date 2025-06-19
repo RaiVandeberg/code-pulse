@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "dependencies": {
     "@clerk/localizations": "^3.16.5",
     "@clerk/nextjs": "^6.22.0",
@@ -26,8 +29,10 @@
     "prisma": "^6.10.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-use-draggable-scroll": "^0.4.7",
     "svix": "^1.67.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

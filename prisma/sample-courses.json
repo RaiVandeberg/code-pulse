@@ -1,0 +1,688 @@
+[
+    {
+        "title": "Next.js para Iniciantes",
+        "slug": "nextjs-para-iniciantes",
+        "shortDescription": "Aprenda a criar aplicações modernas com Next.js, React e Tailwind CSS.",
+        "description": "Aprenda a criar aplicações modernas com Next.js, React e Tailwind CSS.",
+        "thumbnail": "/sample-courses/nextjs.png",
+        "price": 200,
+        "discountPrice": 150,
+        "tags": [
+            "Next.js",
+            "React",
+            "Frontend"
+        ],
+        "modules": [
+            {
+                "title": "Introdução ao Next.js",
+                "description": "Introdução às funcionalidades do Next.js.",
+                "lessons": [
+                    {
+                        "title": "O que é Next.js?",
+                        "description": "Introdução às funcionalidades do Next.js.",
+                        "videoId": "HAXFuHDcPwM",
+                        "durationInMs": 600000
+                    },
+                    {
+                        "title": "Criando sua primeira aplicação",
+                        "description": "Passo a passo para configurar e iniciar um projeto.",
+                        "videoId": "DKS_KAmPwvs",
+                        "durationInMs": 900000
+                    }
+                ]
+            },
+            {
+                "title": "Rotas e Navegação",
+                "description": "Entendendo como funcionam as rotas no Next.js.",
+                "lessons": [
+                    {
+                        "title": "Rotas estáticas e dinâmicas",
+                        "description": "Entendendo como funcionam as rotas no Next.js.",
+                        "videoId": "HAXFuHDcPwM",
+                        "durationInMs": 700000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Node.js para Backend",
+        "slug": "nodejs-para-backend",
+        "shortDescription": "Domine o desenvolvimento backend com Node.js, Express e MongoDB.",
+        "description": "Domine o desenvolvimento backend com Node.js, Express e MongoDB.",
+        "thumbnail": "/sample-courses/node-backend.png",
+        "price": 250,
+        "discountPrice": 200,
+        "tags": [
+            "Node.js",
+            "Backend",
+            "API"
+        ],
+        "modules": [
+            {
+                "title": "Configuração do Ambiente",
+                "description": "Configurando o ambiente de desenvolvimento.",
+                "lessons": [
+                    {
+                        "title": "Instalando Node.js",
+                        "description": "Guia para instalar e configurar Node.js.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 500000
+                    }
+                ]
+            },
+            {
+                "title": "Criando uma API REST",
+                "description": "Criando uma API REST com Node.js e Express.",
+                "lessons": [
+                    {
+                        "title": "Rotas e Controladores",
+                        "description": "Configurando endpoints e controladores.",
+                        "videoId": "B_hKFi8mN8I",
+                        "durationInMs": 800000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "React com TypeScript",
+        "slug": "react-com-typescript",
+        "shortDescription": "Aprenda a construir aplicações React robustas utilizando TypeScript.",
+        "description": "Aprenda a construir aplicações React robustas utilizando TypeScript.",
+        "thumbnail": "/sample-courses/react-typescript.png",
+        "price": 220,
+        "discountPrice": 180,
+        "tags": [
+            "React",
+            "TypeScript",
+            "Frontend"
+        ],
+        "modules": [
+            {
+                "title": "Configuração do Projeto",
+                "description": "Configurando o ambiente de desenvolvimento.",
+                "lessons": [
+                    {
+                        "title": "Criando o ambiente com Vite",
+                        "description": "Configurando um novo projeto React com Vite e TypeScript.",
+                        "videoId": "B_hKFi8mN8I",
+                        "durationInMs": 600000
+                    }
+                ]
+            },
+            {
+                "title": "Componentes e Props",
+                "description": "Criando componentes reutilizáveis com React.",
+                "lessons": [
+                    {
+                        "title": "Componentes funcionais",
+                        "description": "Criando componentes reutilizáveis com React.",
+                        "videoId": "HAXFuHDcPwM",
+                        "durationInMs": 700000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "NestJS Avançado",
+        "slug": "nestjs-avancado",
+        "shortDescription": "Explore os recursos avançados do NestJS para aplicações backend escaláveis.",
+        "description": "Explore os recursos avançados do NestJS para aplicações backend escaláveis.",
+        "thumbnail": "/sample-courses/nest-avancado.png",
+        "price": 300,
+        "discountPrice": 250,
+        "tags": [
+            "NestJS",
+            "Backend",
+            "TypeScript"
+        ],
+        "modules": [
+            {
+                "title": "Introdução ao NestJS",
+                "description": "Visão geral do framework e suas vantagens.",
+                "lessons": [
+                    {
+                        "title": "O que é NestJS?",
+                        "description": "Visão geral do framework e suas vantagens.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 500000
+                    }
+                ]
+            },
+            {
+                "title": "Guards e Interceptors",
+                "description": "Controle de acesso em endpoints.",
+                "lessons": [
+                    {
+                        "title": "Implementando Guards",
+                        "description": "Controle de acesso em endpoints.",
+                        "videoId": "B_hKFi8mN8I",
+                        "durationInMs": 600000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "JavaScript Moderno",
+        "slug": "javascript-moderno",
+        "shortDescription": "Atualize seus conhecimentos com as últimas funcionalidades do JavaScript.",
+        "description": "Atualize seus conhecimentos com as últimas funcionalidades do JavaScript.",
+        "thumbnail": "/sample-courses/javascript-moderno.png",
+        "price": 18000,
+        "discountPrice": 15000,
+        "tags": [
+            "JavaScript",
+            "ES6",
+            "Frontend"
+        ],
+        "modules": [
+            {
+                "title": "Sintaxe ES6+",
+                "description": "Entenda e utilize funções de seta no JavaScript.",
+                "lessons": [
+                    {
+                        "title": "Arrow Functions",
+                        "description": "Entenda e utilize funções de seta no JavaScript.",
+                        "videoId": "HAXFuHDcPwM",
+                        "durationInMs": 400000
+                    }
+                ]
+            },
+            {
+                "title": "Manipulação de Arrays",
+                "description": "Explorando map, filter e reduce.",
+                "lessons": [
+                    {
+                        "title": "Métodos Avançados de Array",
+                        "description": "Explorando map, filter e reduce.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 700000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Introdução ao Python",
+        "slug": "introducao-ao-python",
+        "shortDescription": "Comece sua jornada com Python, uma linguagem poderosa e versátil.",
+        "description": "Comece sua jornada com Python, uma linguagem poderosa e versátil.",
+        "thumbnail": "/sample-courses/introducao-python.png",
+        "price": 190,
+        "discountPrice": 140,
+        "tags": [
+            "Python",
+            "Programação",
+            "Backend"
+        ],
+        "modules": [
+            {
+                "title": "Fundamentos de Python",
+                "description": "Introdução às funcionalidades do Python.",
+                "lessons": [
+                    {
+                        "title": "Sintaxe Básica",
+                        "description": "Aprenda a sintaxe e conceitos fundamentais de Python.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 600000
+                    }
+                ]
+            },
+            {
+                "title": "Estruturas de Dados",
+                "description": "Manipulação de dados em Python.",
+                "lessons": [
+                    {
+                        "title": "Trabalhando com listas e dicionários",
+                        "description": "Manipulação de dados em Python.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 800000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Django Essencial",
+        "slug": "django-essencial",
+        "shortDescription": "Construa aplicações web com Django, o framework mais popular para Python.",
+        "description": "Construa aplicações web com Django, o framework mais popular para Python.",
+        "thumbnail": "/sample-courses/django-essencial.png",
+        "price": 270,
+        "discountPrice": 220,
+        "tags": [
+            "Django",
+            "Backend",
+            "Python"
+        ],
+        "modules": [
+            {
+                "title": "Introdução ao Django",
+                "description": "Entendendo o funcionamento do framework.",
+                "lessons": [
+                    {
+                        "title": "O que é Django?",
+                        "description": "Entendendo o funcionamento do framework.",
+                        "videoId": "B_hKFi8mN8I",
+                        "durationInMs": 600000
+                    }
+                ]
+            },
+            {
+                "title": "Modelos e Migrations",
+                "description": "Modelagem e manipulação de dados no Django.",
+                "lessons": [
+                    {
+                        "title": "Trabalhando com Banco de Dados",
+                        "description": "Modelagem e manipulação de dados no Django.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 700000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Vue.js para Iniciantes",
+        "slug": "vuejs-para-iniciantes",
+        "shortDescription": "Aprenda a criar aplicações dinâmicas com Vue.js.",
+        "description": "Aprenda a criar aplicações dinâmicas com Vue.js.",
+        "thumbnail": "/sample-courses/vue-iniciantes.png",
+        "price": 21000,
+        "discountPrice": 17000,
+        "tags": [
+            "Vue.js",
+            "Frontend",
+            "JavaScript"
+        ],
+        "modules": [
+            {
+                "title": "Primeiros Passos com Vue.js",
+                "description": "Conceitos básicos e configuração inicial.",
+                "lessons": [
+                    {
+                        "title": "Introdução ao Vue.js",
+                        "description": "Conceitos básicos e configuração inicial.",
+                        "videoId": "DKS_KAmPwvs",
+                        "durationInMs": 500000
+                    }
+                ]
+            },
+            {
+                "title": "Componentização",
+                "description": "Estruturando a aplicação com componentes Vue.",
+                "lessons": [
+                    {
+                        "title": "Criando Componentes",
+                        "description": "Estruturando a aplicação com componentes Vue.",
+                        "videoId": "B_hKFi8mN8I",
+                        "durationInMs": 800000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Flutter para Iniciantes",
+        "slug": "flutter-para-iniciantes",
+        "shortDescription": "Desenvolva aplicativos nativos para Android e iOS com Flutter.",
+        "description": "Desenvolva aplicativos nativos para Android e iOS com Flutter.",
+        "thumbnail": "/sample-courses/flutter-iniciantes.png",
+        "price": 200,
+        "discountPrice": 170,
+        "tags": [
+            "Flutter",
+            "Mobile",
+            "Dart"
+        ],
+        "modules": [
+            {
+                "title": "Configuração do Ambiente",
+                "description": "Guia para instalação e configuração do Flutter.",
+                "lessons": [
+                    {
+                        "title": "Instalando o Flutter",
+                        "description": "Guia para instalação e configuração do Flutter.",
+                        "videoId": "DKS_KAmPwvs",
+                        "durationInMs": 600000
+                    }
+                ]
+            },
+            {
+                "title": "Widgets e Layouts",
+                "description": "Criando interfaces reutilizáveis.",
+                "lessons": [
+                    {
+                        "title": "Trabalhando com Widgets",
+                        "description": "Criando interfaces reutilizáveis.",
+                        "videoId": "B_hKFi8mN8I",
+                        "durationInMs": 700000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Kotlin para Android",
+        "slug": "kotlin-para-android",
+        "shortDescription": "Aprenda a desenvolver aplicativos Android com Kotlin.",
+        "description": "Aprenda a desenvolver aplicativos Android com Kotlin.",
+        "thumbnail": "/sample-courses/kotlin-android.png",
+        "price": 180,
+        "discountPrice": 150,
+        "tags": [
+            "Kotlin",
+            "Mobile",
+            "Android"
+        ],
+        "modules": [
+            {
+                "title": "Primeiros Passos com Kotlin",
+                "description": "Preparando o ambiente para desenvolvimento.",
+                "lessons": [
+                    {
+                        "title": "Configurando o Android Studio",
+                        "description": "Preparando o ambiente para desenvolvimento.",
+                        "videoId": "B_hKFi8mN8I",
+                        "durationInMs": 500000
+                    }
+                ]
+            },
+            {
+                "title": "Construindo Interfaces",
+                "description": "Trabalhando com XML e Views.",
+                "lessons": [
+                    {
+                        "title": "Layouts no Android",
+                        "description": "Trabalhando com XML e Views.",
+                        "videoId": "HAXFuHDcPwM",
+                        "durationInMs": 800000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Spring Boot Essencial",
+        "slug": "spring-boot-essencial",
+        "shortDescription": "Domine o desenvolvimento de APIs com Spring Boot.",
+        "description": "Domine o desenvolvimento de APIs com Spring Boot.",
+        "thumbnail": "/sample-courses/spring-boot-essencial.png",
+        "price": 25000,
+        "discountPrice": 20000,
+        "tags": [
+            "Spring Boot",
+            "Java",
+            "Backend"
+        ],
+        "modules": [
+            {
+                "title": "Introdução ao Spring Boot",
+                "description": "Conceitos e vantagens do framework.",
+                "lessons": [
+                    {
+                        "title": "O que é Spring Boot?",
+                        "description": "Conceitos e vantagens do framework.",
+                        "videoId": "DKS_KAmPwvs",
+                        "durationInMs": 500000
+                    }
+                ]
+            },
+            {
+                "title": "APIs RESTful",
+                "description": "Desenvolvendo APIs RESTful com Spring Boot.",
+                "lessons": [
+                    {
+                        "title": "Criando Endpoints",
+                        "description": "Desenvolvendo APIs RESTful com Spring Boot.",
+                        "videoId": "dV2T6ioDrk0",
+                        "durationInMs": 800000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "DevOps com Docker e Kubernetes",
+        "slug": "devops-com-docker-e-kubernetes",
+        "shortDescription": "Automatize o gerenciamento de containers e clusters.",
+        "description": "Automatize o gerenciamento de containers e clusters.",
+        "thumbnail": "/sample-courses/devops-docker-kubernetes.png",
+        "price": 280,
+        "discountPrice": 230,
+        "tags": [
+            "Docker",
+            "Kubernetes",
+            "DevOps"
+        ],
+        "modules": [
+            {
+                "title": "Introdução ao Docker",
+                "description": "Fundamentos do Docker e como utilizá-lo.",
+                "lessons": [
+                    {
+                        "title": "Entendendo Containers",
+                        "description": "Fundamentos do Docker e como utilizá-lo.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 600000
+                    }
+                ]
+            },
+            {
+                "title": "Gerenciando Clusters",
+                "description": "Orquestração de containers com Kubernetes.",
+                "lessons": [
+                    {
+                        "title": "Introdução ao Kubernetes",
+                        "description": "Orquestração de containers com Kubernetes.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 900000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Design Patterns em Java",
+        "slug": "design-patterns-em-java",
+        "shortDescription": "Implemente padrões de projeto para soluções elegantes e escaláveis.",
+        "description": "Implemente padrões de projeto para soluções elegantes e escaláveis.",
+        "thumbnail": "/sample-courses/design-patterns-java.png",
+        "price": 210,
+        "discountPrice": 180,
+        "tags": [
+            "Java",
+            "Design Patterns",
+            "Backend"
+        ],
+        "modules": [
+            {
+                "title": "Padrões Criacionais",
+                "description": "Entenda o padrão Singleton e suas aplicações.",
+                "lessons": [
+                    {
+                        "title": "Singleton",
+                        "description": "Entenda o padrão Singleton e suas aplicações.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 700000
+                    }
+                ]
+            },
+            {
+                "title": "Padrões Estruturais",
+                "description": "Adaptando interfaces com o padrão Adapter.",
+                "lessons": [
+                    {
+                        "title": "Adapter",
+                        "description": "Adaptando interfaces com o padrão Adapter.",
+                        "videoId": "DKS_KAmPwvs",
+                        "durationInMs": 800000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "UX Design Essencial",
+        "slug": "ux-design-essencial",
+        "shortDescription": "Crie interfaces intuitivas e centradas no usuário.",
+        "description": "Crie interfaces intuitivas e centradas no usuário.",
+        "thumbnail": "/sample-courses/ux-essencial.png",
+        "price": 15000,
+        "discountPrice": 12000,
+        "tags": [
+            "UX Design",
+            "UI",
+            "Design"
+        ],
+        "modules": [
+            {
+                "title": "Fundamentos de UX",
+                "description": "Conceitos e práticas de UX Design.",
+                "lessons": [
+                    {
+                        "title": "Entendendo o Usuário",
+                        "description": "Conceitos e práticas de UX Design.",
+                        "videoId": "dV2T6ioDrk0",
+                        "durationInMs": 500000
+                    }
+                ]
+            },
+            {
+                "title": "Prototipação",
+                "description": "Ferramentas e técnicas para protótipos rápidos.",
+                "lessons": [
+                    {
+                        "title": "Criando Wireframes",
+                        "description": "Ferramentas e técnicas para protótipos rápidos.",
+                        "videoId": "HAXFuHDcPwM",
+                        "durationInMs": 600000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Ciência de Dados com Python",
+        "slug": "ciencia-de-dados-com-python",
+        "shortDescription": "Domine a manipulação e visualização de dados com Python.",
+        "description": "Domine a manipulação e visualização de dados com Python.",
+        "thumbnail": "/sample-courses/ciencia-dados-python.png",
+        "price": 250,
+        "discountPrice": 200,
+        "tags": [
+            "Python",
+            "Data Science",
+            "Machine Learning"
+        ],
+        "modules": [
+            {
+                "title": "Manipulação de Dados",
+                "description": "Introdução ao uso de DataFrames com Pandas.",
+                "lessons": [
+                    {
+                        "title": "Trabalhando com Pandas",
+                        "description": "Introdução ao uso de DataFrames com Pandas.",
+                        "videoId": "B_hKFi8mN8I",
+                        "durationInMs": 800000
+                    }
+                ]
+            },
+            {
+                "title": "Visualização de Dados",
+                "description": "Explorando dados visualmente.",
+                "lessons": [
+                    {
+                        "title": "Criando gráficos com Matplotlib",
+                        "description": "Explorando dados visualmente.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 700000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Machine Learning Básico",
+        "slug": "machine-learning-basico",
+        "shortDescription": "Aprenda os fundamentos de aprendizado de máquina.",
+        "description": "Aprenda os fundamentos de aprendizado de máquina.",
+        "thumbnail": "/sample-courses/machine-learning.png",
+        "price": 30000,
+        "discountPrice": 25000,
+        "tags": [
+            "Machine Learning",
+            "Python",
+            "Data Science"
+        ],
+        "modules": [
+            {
+                "title": "Introdução ao Machine Learning",
+                "description": "Conceitos básicos e aplicações.",
+                "lessons": [
+                    {
+                        "title": "O que é Machine Learning?",
+                        "description": "Conceitos básicos e aplicações.",
+                        "videoId": "dV2T6ioDrk0",
+                        "durationInMs": 600000
+                    }
+                ]
+            },
+            {
+                "title": "Modelos Preditivos",
+                "description": "Construindo modelos básicos de predição.",
+                "lessons": [
+                    {
+                        "title": "Regressão Linear",
+                        "description": "Construindo modelos básicos de predição.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 900000
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "HTML e CSS do Zero",
+        "slug": "html-e-css-do-zero",
+        "shortDescription": "Construa páginas web estilizadas e responsivas.",
+        "description": "Construa páginas web estilizadas e responsivas.",
+        "thumbnail": "/sample-courses/html-css.png",
+        "price": 100,
+        "discountPrice": 80,
+        "tags": [
+            "HTML",
+            "CSS",
+            "Frontend"
+        ],
+        "modules": [
+            {
+                "title": "Fundamentos de HTML",
+                "description": "Tags essenciais para páginas web.",
+                "lessons": [
+                    {
+                        "title": "Criando Estruturas Básicas",
+                        "description": "Tags essenciais para páginas web.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 400000
+                    }
+                ]
+            },
+            {
+                "title": "Estilização com CSS",
+                "description": "Estilizando elementos da página.",
+                "lessons": [
+                    {
+                        "title": "Propriedades Básicas de CSS",
+                        "description": "Estilizando elementos da página.",
+                        "videoId": "89hYBEXKpqs",
+                        "durationInMs": 500000
+                    }
+                ]
+            }
+        ]
+    }
+]

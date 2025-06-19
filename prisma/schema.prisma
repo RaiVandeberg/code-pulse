@@ -64,7 +64,7 @@ model Course {
   difficulty       CourseDifficulty @default(EASY)
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-  CourseModule     CourseModule[]
+  modules          CourseModule[]
 
   @@map("courses")
 }
@@ -78,5 +78,26 @@ model CourseModule {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  order   Int
+  lessons CourseLesson[]
+
   @@map("course_modules")
+}
+
+model CourseLesson {
+  id           String @id @default(cuid())
+  title        String
+  description  String
+  videoId      String
+  durationInMs Int
+
+  order Int
+
+  moduleId String
+  module   CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("course_lessons")
 }
