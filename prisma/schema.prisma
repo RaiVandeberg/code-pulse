@@ -26,3 +26,57 @@ model User {
 
   @@map("users")
 }
+
+model CourseTag {
+  id   String @id @default(cuid())
+  name String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  course    Course?  @relation(fields: [courseId], references: [id])
+  courseId  String?
+
+  @@map("course_tags")
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum CourseDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Course {
+  id               String           @id @default(cuid())
+  title            String
+  description      String
+  shortDescription String?
+  slug             String           @unique
+  status           CourseStatus     @default(DRAFT)
+  thumbnail        String
+  price            Float
+  discountPrice    Float?
+  tags             CourseTag[]
+  difficulty       CourseDifficulty @default(EASY)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  CourseModule     CourseModule[]
+
+  @@map("courses")
+}
+
+model CourseModule {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("course_modules")
+}
