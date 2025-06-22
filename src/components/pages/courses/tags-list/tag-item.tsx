@@ -15,12 +15,14 @@ export const TagItem = ({ tag }: TagItemProps) => {
     const router = useRouter()
     const searchParams = useSearchParams()
     const currentIds = searchParams?.getAll("tags")
+    const currentQuery = searchParams?.get("query")
     const isSelected = currentIds.includes(tag.id)
 
     const onSelect = () => {
         const url = qs.stringifyUrl({
             url: pathname,
             query: {
+                query: currentQuery,
                 tags: isSelected ? currentIds.filter((id) => id !== tag.id)
                     : [...currentIds, tag.id]
             }
