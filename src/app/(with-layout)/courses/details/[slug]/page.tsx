@@ -2,12 +2,12 @@ import { getCourse } from "@/actions/courses";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatDificulty, formatDuration } from "@/lib/utils";
+import { cn, formatDificulty, formatDuration } from "@/lib/utils";
 
 import { Calendar, Camera, ChartColumnIncreasing, CirclePlay, Clock, LayoutDashboard } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { format } from "path";
+import { format } from "date-fns";
 
 type CourseDetailsPageProps = {
     params: Promise<{
@@ -29,6 +29,8 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
         )
     }, 0)
 
+
+
     const details = [
         {
             icon: Clock,
@@ -48,11 +50,9 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
         {
             icon: Calendar,
             label: "Data de Publicação",
-            value: "22/10/2023"
+            value: format(course.createdAt, "dd/MM/yyyy")
         }
     ]
-
-
 
     return (
         <div className="grid grid-cols-[1fr,400px] gap-10">
@@ -112,10 +112,36 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
                                                 {detail.value}
                                             </p>
                                         </div>
-                                        <Separator orientation="vertical" />
+
                                     </div>
                                 ))}
                             </div>
+                        </TabsContent>
+                        <TabsContent value="content" className="mt-4 flex flex-col gap-6">
+                            {course.modules.map((mod, index) => (
+                                <div key={mod.id} className="flex items-center gap-4 bg-muted p-4">
+                                    <div className={cn("w-12 h-12 min-w-12 flex items-center justify-center border-2 border-primary",
+                                        "text-primary font-bold text-2xl rounded-full bg-primary/10",
+                                    )}>
+                                        {index + 1}
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <p className="sm:text-xl font-bold">{mod.title}</p>
+                                            <Badge variant={"outline"}>
+                                                {mod.lessons.length} aulas
+                                                {mod.lessons.length === 1 ? "" : "s"}
+                                            </Badge>
+                                        </div>
+                                        {!!mod.description && (
+                                            <p className="text-sm sm:text-base text-muted-foreground mt-1">
+                                                {mod.description}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
                         </TabsContent>
 
                     </Tabs>
