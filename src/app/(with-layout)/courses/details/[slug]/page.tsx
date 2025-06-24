@@ -2,10 +2,12 @@ import { getCourse } from "@/actions/courses";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatDificulty, formatDuration } from "@/lib/utils";
 
-import { CirclePlay, LayoutDashboard } from "lucide-react";
+import { Calendar, Camera, ChartColumnIncreasing, CirclePlay, Clock, LayoutDashboard } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { format } from "path";
 
 type CourseDetailsPageProps = {
     params: Promise<{
@@ -16,8 +18,41 @@ type CourseDetailsPageProps = {
 export default async function CourseDetailsPage({ params }: CourseDetailsPageProps) {
     const { slug } = await params;
     const { course } = await getCourse(slug)
-
     if (!course) return notFound();
+    const totalLessons = course?.modules.reduce((acc, mod) => {
+        return acc + mod.lessons.length
+    }, 0)
+
+    const totalDuration = course?.modules.reduce((acc, mod) => {
+        return (
+            acc + mod.lessons.reduce((acc, lesson) => acc + lesson.durationInMs, 0)
+        )
+    }, 0)
+
+    const details = [
+        {
+            icon: Clock,
+            label: "Duração",
+            value: formatDuration(totalDuration ?? 0)
+        },
+        {
+            icon: Camera,
+            label: "Aulas",
+            value: `${totalLessons} aulas`
+        },
+        {
+            icon: ChartColumnIncreasing,
+            label: "Dificuldade",
+            value: formatDificulty(course.difficulty)
+        },
+        {
+            icon: Calendar,
+            label: "Data de Publicação",
+            value: "22/10/2023"
+        }
+    ]
+
+
 
     return (
         <div className="grid grid-cols-[1fr,400px] gap-10">
@@ -61,11 +96,28 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
                         </TabsList>
 
                         <TabsContent value="overview">
-                            <p>{course.description}</p>
+                            <p className="opacity-90 mt-4">{course.description}</p>
+                            <Separator className="my-6" />
+                            <div className="grid grid-cols-2 gap-6">
+                                {details.map((detail) => (
+                                    <div key={detail.label} className="flex items-center gap-2">
+                                        <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                                            <detail.icon size={20} />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-muted-foreground font-medium">
+                                                {detail.label}
+                                            </p>
+                                            <p className="font-medium">
+                                                {detail.value}
+                                            </p>
+                                        </div>
+                                        <Separator orientation="vertical" />
+                                    </div>
+                                ))}
+                            </div>
                         </TabsContent>
-                        <TabsContent value="content">
-                            <p>{course.difficulty}</p>
-                        </TabsContent>
+
                     </Tabs>
                     <div>
                         <p></p>
