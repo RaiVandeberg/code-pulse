@@ -8,6 +8,8 @@ import { Calendar, Camera, ChartColumnIncreasing, CirclePlay, Clock, LayoutDashb
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
+import { CourseProgress } from "@/components/pages/courses/course-details/course-progress";
+import { BackButton } from "@/components/ui/back-button";
 
 type CourseDetailsPageProps = {
     params: Promise<{
@@ -59,6 +61,7 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
             <section className="flex flex-col">
                 <div className="flex justify-between gap-6 flex-col md:flex-row">
                     <div>
+                        <BackButton />
                         <h1 className="text-3xl sm:text-4xl font-bold mt-6 ">
                             {course.title}
                         </h1>
@@ -145,9 +148,7 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
                         </TabsContent>
 
                     </Tabs>
-                    <div>
-                        <p></p>
-                    </div>
+                    <CourseProgress course={course} />
                 </div>
             </section>
         </div>
