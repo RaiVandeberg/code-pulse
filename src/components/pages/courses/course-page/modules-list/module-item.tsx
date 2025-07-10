@@ -5,9 +5,6 @@ import * as Accordion from "@radix-ui/react-accordion"
 import { ChevronDown } from "lucide-react";
 import { LessonItem } from "./lesson-item";
 
-
-
-
 type ModulesItemProps = {
     data: CourseModuleWithLessons;
 }

@@ -1,6 +1,12 @@
+"use client"
+
 import { cn } from "@/lib/utils"
 import * as Accordion from "@radix-ui/react-accordion"
 import { ModulesItem } from "./module-item"
+import { usePreferencesStore } from "@/stores/preferences"
+import { Button } from "@/components/ui/button"
+import { PanelRightOpen } from "lucide-react"
+import { useEffect, useRef } from "react"
 
 type ModulesListProps = {
     modules: CourseModuleWithLessons[]
@@ -8,26 +14,65 @@ type ModulesListProps = {
 
 
 export const ModulesList = ({ modules }: ModulesListProps) => {
+    const { expandModules, setExpandModules, modulesListCollapsed, setModulesListCollapsed } = usePreferencesStore()
+    const moduleId = modules[0]?.id
+    const initialCollapsed = useRef(false)
+
+    useEffect(() => {
+        if (initialCollapsed.current) return;
+        initialCollapsed.current = true;
+        setModulesListCollapsed(window.innerWidth < 768)
+    }, [setModulesListCollapsed])
+
+
+    const handleToggleCollapse = () => {
+        setModulesListCollapsed(!modulesListCollapsed)
+
+    }
     return (
         <aside className={cn("h-full border-l border-border bg-sidebar p-4 overflow-y-auto overflow-x-hidden min-w-[380px] max-w-[380px] transition-all flex flex-col items-center",
-            "relative"
+            !modulesListCollapsed && "fixed top-0 bottom-0 z-10 right-0 sm:relative",
+            modulesListCollapsed && "w-18 max-w-18 min-w-18 hidden sm:flex"
         )}
         >
 
-            <div className="absolute z-10 left-0 top-0 bottom-0 w-4 flex justify-start group cursor-e-resize group">
+            <div className={cn("absolute z-10 left-0 top-0 bottom-0 w-4 flex justify-start group cursor-e-resize group",
+                modulesListCollapsed && "cursor-w-resize")}
+                onClick={handleToggleCollapse}>
                 <div className="h-full w-0.5 group-hover:bg-sidebar-border transition-all">
 
                 </div>
             </div>
-            <Accordion.Root
-                type="single"
-                className="w-full h-full flex flex-col gap-3"
-                collapsible>
+            {modulesListCollapsed ? (
+                <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={handleToggleCollapse}>
+                    <PanelRightOpen />
+                </Button>
+            ) : (
+                <>
+                    <Button
+                        variant="outline"
+                        onClick={handleToggleCollapse}
+                        className="w-full flex sm:hidden mb-4">
+                        Fechar módulos
+                    </Button>
 
-                {modules.map((coursemodule) => (
-                    <ModulesItem key={coursemodule.id} data={coursemodule} />
-                ))}
-            </Accordion.Root>
+                    <Accordion.Root
+                        type="single"
+                        className="w-full h-full flex flex-col gap-3"
+                        collapsible
+                        defaultValue={moduleId}
+                        value={expandModules ?? undefined}
+                        onValueChange={setExpandModules}>
+
+                        {modules.map((coursemodule) => (
+                            <ModulesItem key={coursemodule.id} data={coursemodule} />
+                        ))}
+                    </Accordion.Root>
+                </>
+            )}
 
         </aside>
     )
