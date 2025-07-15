@@ -5,6 +5,7 @@ import "@/styles/clerk.css";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ptBR } from "@clerk/localizations"
+import { ClientProviders } from "@/components/shared/client-providers";
 
 const nunito = Nunito({
   variable: "--font-sans",
@@ -33,7 +34,9 @@ export default function RootLayout({
         <body
           className={cn(nunito.variable, "antialiased font-sans dark")}
         >
-          {children}
+          <ClientProviders>
+            {children}
+          </ClientProviders>
         </body>
       </html>
     </ClerkProvider>
