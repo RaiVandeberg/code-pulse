@@ -16,14 +16,15 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(cuid())
-  fistName    String
-  lastName    String?
-  email       String   @unique
-  clerkUserId String   @unique
-  imageUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String            @id @default(cuid())
+  fistName        String
+  lastName        String?
+  email           String            @unique
+  clerkUserId     String            @unique
+  imageUrl        String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  completedLesson CompletedLesson[]
 
   @@map("users")
 }
@@ -52,20 +53,21 @@ enum CourseDifficulty {
 }
 
 model Course {
-  id               String           @id @default(cuid())
+  id               String            @id @default(cuid())
   title            String
   description      String
   shortDescription String?
-  slug             String           @unique
-  status           CourseStatus     @default(DRAFT)
+  slug             String            @unique
+  status           CourseStatus      @default(DRAFT)
   thumbnail        String
   price            Float
   discountPrice    Float?
   tags             CourseTag[]
-  difficulty       CourseDifficulty @default(EASY)
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  difficulty       CourseDifficulty  @default(EASY)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
   modules          CourseModule[]
+  completedLesson  CompletedLesson[]
 
   @@map("courses")
 }
@@ -97,8 +99,27 @@ model CourseLesson {
   moduleId String
   module   CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  completedLesson CompletedLesson[]
+
+  @@map("course_lessons")
+}
+
+model CompletedLesson {
+  id String @id @default(cuid())
+
+  lessonId String
+  lesson   CourseLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("course_lessons")
+  @@map("completed_lessons")
 }
