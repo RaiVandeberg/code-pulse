@@ -4,15 +4,15 @@ import { cn, formatDuration } from "@/lib/utils";
 import * as Accordion from "@radix-ui/react-accordion"
 import { ChevronDown } from "lucide-react";
 import { LessonItem } from "./lesson-item";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 type ModulesItemProps = {
     data: CourseModuleWithLessons;
-    completedLessons: CompleteLesson[];
+    completedLessons: CompletedLesson[];
 }
 export const ModulesItem = ({ data, completedLessons }: ModulesItemProps) => {
 
-    const moduleProgress = 100
+
     const totalLessons = data.lessons.length;
     const totalDuration = data.lessons.reduce((acc, lesson) => acc + lesson.durationInMs, 0);
 
@@ -20,7 +20,7 @@ export const ModulesItem = ({ data, completedLessons }: ModulesItemProps) => {
 
     const lessons = useMemo(() => {
         return data.lessons.map((lesson) => {
-            const completed = completedLessons.some((l) => l.id === lesson.id);
+            const completed = completedLessons.some((completedLesson) => completedLesson.lessonId === lesson.id);
             return {
                 ...lesson,
                 completed: completed
@@ -28,6 +28,12 @@ export const ModulesItem = ({ data, completedLessons }: ModulesItemProps) => {
         })
     }, [completedLessons, data.lessons]);
 
+
+    const moduleProgress = useMemo(() => {
+        const completedModuleLessons = lessons.filter((lesson) => lesson.completed).length;
+
+        return (completedModuleLessons / totalLessons) * 100;
+    }, [lessons, totalLessons]);
     return (
         <Accordion.Item
             value={data.id}

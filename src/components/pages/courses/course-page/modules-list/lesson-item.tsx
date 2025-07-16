@@ -1,7 +1,8 @@
-import { markLessonAsCompleted } from "@/actions/course-progress";
+import { markLessonAsCompleted, unmarkLessonAsCompleted } from "@/actions/course-progress";
 import { Tooltip } from "@/components/ui/tooltip";
+import { queryKeys } from "@/constants/query-key";
 import { cn, formatDuration } from "@/lib/utils"
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { CircleCheck, CircleCheckBig, CircleX, Video } from "lucide-react";
 import Link from "next/link"
@@ -15,17 +16,38 @@ type LessonItemProps = {
 
 export const LessonItem = ({ lesson }: LessonItemProps) => {
 
+    const queryClient = useQueryClient();
+
     const params = useParams()
     const courseSlug = params.slug as string;
-    const currentLessonId = null;
+    const currentLessonId = lesson.id;
     const completed = lesson.completed;
     const PrimaryItem = completed ? CircleCheck : Video;
     const SecondaryItem = completed ? CircleX : CircleCheckBig;
     const lessonId = lesson.id;
     const { mutate: handleCompletedLesson, isPending: isCompletingLesson } = useMutation({
-        mutationFn: () => markLessonAsCompleted({ lessonId, courseSlug })
+        mutationFn: () => markLessonAsCompleted({ lessonId, courseSlug }),
+        // faz ele redender novamente o componente
+        // e atualiza o estado do curso
+        onSuccess: () => {
+            queryClient.invalidateQueries(
+                {
+                    queryKey: queryKeys.CourseProgress(courseSlug)
+                }
+            );
+        }
     })
-    const isLoading = isCompletingLesson;
+    const { mutate: handleUnmarkLessonAsCompleted, isPending: isUnmarkcompletingLesson } = useMutation({
+        mutationFn: () => unmarkLessonAsCompleted(lessonId),
+        onSuccess: () => {
+            queryClient.invalidateQueries(
+                {
+                    queryKey: queryKeys.CourseProgress(courseSlug)
+                }
+            );
+        }
+    })
+    const isLoading = isCompletingLesson || isUnmarkcompletingLesson;
 
     return (
         <Link className={cn(" flex items-center gap-2 text-muted-foreground text-sm p-2 hover:bg-muted/50 transition-all rounded-md",
@@ -36,7 +58,7 @@ export const LessonItem = ({ lesson }: LessonItemProps) => {
 
             <Tooltip content={completed ? "Marcar aula como não assistida" : "Marcar aula como assistida"}>
                 <button type="button"
-                    className="w-4 min-w-4 h-4 relative group/lesson-button disabled: opacity-50 cursor-not-allowed"
+                    className="w-4 min-w-4 h-4 relative group/lesson-button disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={isLoading}
                     onClick={(e) => {
                         e.preventDefault();
@@ -44,7 +66,7 @@ export const LessonItem = ({ lesson }: LessonItemProps) => {
 
 
                         if (completed) {
-
+                            handleUnmarkLessonAsCompleted();
                             return
                         }
                         handleCompletedLesson();
