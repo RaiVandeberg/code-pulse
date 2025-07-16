@@ -41,3 +41,44 @@ export const markLessonAsCompleted = async ({ courseSlug, lessonId }: CompleteLe
 
     return completedLesson
 }
+
+export const getCourseProgress = async (courseSlug: string) => {
+    const { userId } = await getUser()
+
+    const course = await prisma.course.findUnique({
+        where: {
+            slug: courseSlug
+        },
+        include: {
+            modules: {
+                select: {
+                    lessons: {
+                        select: {
+                            id: true,
+                        },
+                    }
+                },
+            },
+        },
+    })
+
+    if (!course) {
+        throw new Error("Course not found")
+    }
+
+    const completedLessons = await prisma.completedLesson.findMany({
+        where: {
+            courseId: course.id,
+            userId
+        }
+    })
+
+    const totalLessons = course.modules.flatMap(module => module.lessons).length;
+    const completedLessonCount = completedLessons.length;
+
+    const progress = Math.round((completedLessonCount / totalLessons) * 100);
+    return {
+        completedLessons,
+        progress
+    }
+}

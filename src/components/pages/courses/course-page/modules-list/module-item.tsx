@@ -4,17 +4,29 @@ import { cn, formatDuration } from "@/lib/utils";
 import * as Accordion from "@radix-ui/react-accordion"
 import { ChevronDown } from "lucide-react";
 import { LessonItem } from "./lesson-item";
+import { useMemo } from "react";
 
 type ModulesItemProps = {
     data: CourseModuleWithLessons;
+    completedLessons: CompleteLesson[];
 }
-export const ModulesItem = ({ data }: ModulesItemProps) => {
+export const ModulesItem = ({ data, completedLessons }: ModulesItemProps) => {
 
     const moduleProgress = 100
     const totalLessons = data.lessons.length;
     const totalDuration = data.lessons.reduce((acc, lesson) => acc + lesson.durationInMs, 0);
 
     const formattedDuration = formatDuration(totalDuration);
+
+    const lessons = useMemo(() => {
+        return data.lessons.map((lesson) => {
+            const completed = completedLessons.some((l) => l.id === lesson.id);
+            return {
+                ...lesson,
+                completed: completed
+            }
+        })
+    }, [completedLessons, data.lessons]);
 
     return (
         <Accordion.Item
@@ -39,7 +51,7 @@ export const ModulesItem = ({ data }: ModulesItemProps) => {
             </Accordion.Trigger>
             <Accordion.Content className="data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown overflow-hidden">
                 <div className="p-2 flex flex-col">
-                    {data.lessons.map((lesson) => (
+                    {lessons.map((lesson) => (
                         <LessonItem key={lesson.id} lesson={lesson} />
                     ))}
                 </div>

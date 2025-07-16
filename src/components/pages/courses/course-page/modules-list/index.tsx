@@ -7,6 +7,10 @@ import { usePreferencesStore } from "@/stores/preferences"
 import { Button } from "@/components/ui/button"
 import { PanelRightOpen } from "lucide-react"
 import { useEffect, useRef } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { getCourseProgress } from "@/actions/course-progress"
+import { useParams } from "next/navigation"
+import { QueryKey } from "@/constants/query-key"
 
 type ModulesListProps = {
     modules: CourseModuleWithLessons[]
@@ -17,6 +21,8 @@ export const ModulesList = ({ modules }: ModulesListProps) => {
     const { expandModules, setExpandModules, modulesListCollapsed, setModulesListCollapsed } = usePreferencesStore()
     const moduleId = modules[0]?.id
     const initialCollapsed = useRef(false)
+    const params = useParams()
+    const courseSlug = params.slug as string;
 
     useEffect(() => {
         if (initialCollapsed.current) return;
@@ -29,6 +35,14 @@ export const ModulesList = ({ modules }: ModulesListProps) => {
         setModulesListCollapsed(!modulesListCollapsed)
 
     }
+    const { data: courseProgress } = useQuery({
+        queryKey: QueryKey.CourseProgress(courseSlug),
+        queryFn: () => getCourseProgress(courseSlug),
+        enabled: !!courseSlug
+
+    })
+
+    const completedLessons = courseProgress?.completedLessons ?? []
     return (
         <aside className={cn("h-full border-l border-border bg-sidebar p-4 overflow-y-auto overflow-x-hidden min-w-[380px] max-w-[380px] transition-all flex flex-col items-center",
             !modulesListCollapsed && "fixed top-0 bottom-0 z-10 right-0 sm:relative",
@@ -68,7 +82,8 @@ export const ModulesList = ({ modules }: ModulesListProps) => {
                         onValueChange={setExpandModules}>
 
                         {modules.map((coursemodule) => (
-                            <ModulesItem key={coursemodule.id} data={coursemodule} />
+                            <ModulesItem key={coursemodule.id} data={coursemodule}
+                                completedLessons={completedLessons} />
                         ))}
                     </Accordion.Root>
                 </>
