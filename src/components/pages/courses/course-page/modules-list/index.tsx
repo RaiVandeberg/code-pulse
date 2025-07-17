@@ -19,10 +19,10 @@ type ModulesListProps = {
 
 export const ModulesList = ({ modules }: ModulesListProps) => {
     const { expandModules, setExpandModules, modulesListCollapsed, setModulesListCollapsed } = usePreferencesStore()
-    const moduleId = modules[0]?.id
     const initialCollapsed = useRef(false)
     const params = useParams()
     const courseSlug = params.slug as string;
+    const moduleId = params.moduleId as string;
 
     useEffect(() => {
         if (initialCollapsed.current) return;
