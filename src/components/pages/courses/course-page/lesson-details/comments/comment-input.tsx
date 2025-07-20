@@ -13,6 +13,8 @@ import { createLessonComment } from "@/actions/course-comments"
 import { queryKeys } from "@/constants/query-key"
 import { useParams } from "next/navigation"
 import { toast } from "sonner"
+import { cn } from "@/lib/utils"
+import { on } from "events"
 
 
 const formSchema = z.object({
@@ -21,7 +23,21 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-export const CommentInput = () => {
+type CommentInputProps = {
+    parentCommentId?: string;
+    autoFocus?: boolean;
+    onCancel?: () => void;
+    onSuccess?: () => void;
+    className?: string;
+}
+
+export const CommentInput = ({
+    parentCommentId,
+    autoFocus,
+    onCancel,
+    onSuccess,
+    className
+}: CommentInputProps) => {
     const queryClient = useQueryClient();
     const params = useParams();
     const lessonId = params.lessonId as string;
@@ -40,7 +56,7 @@ export const CommentInput = () => {
                 queryKey: queryKeys.lessonComments(lessonId)
             });
             reset()
-
+            if (onSuccess) onSuccess()
             toast.success("Comentário criado com sucesso")
         },
         onError: () => {
@@ -53,11 +69,11 @@ export const CommentInput = () => {
             courseSlug,
             lessonId,
             content: data.content,
-            parentId: undefined
+            parentId: parentCommentId
         })
     };
     return (
-        <form className="flex gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <form className={cn("flex gap-4", className)} onSubmit={handleSubmit(onSubmit)}>
             <Avatar src={user?.imageUrl} fallback={user?.fullName} />
             <Controller
                 control={control}
@@ -65,10 +81,18 @@ export const CommentInput = () => {
                 render={({ field }) => (
                     <Textarea
                         {...field}
-                        placeholder="Deixe seu comentário" className="min-h-[100px]" {...field} />
+                        placeholder="Deixe seu comentário" className="min-h-[100px]" {...field}
+                        autoFocus={autoFocus} />
                 )}
             />
-            <Button type="submit" className="mt-2" disabled={isPending}>Comentar</Button>
+            <div className="flex  gap-2">
+                {onCancel && (
+                    <Button variant="outline" onClick={onCancel} disabled={isPending}>
+                        Cancelar
+                    </Button>
+                )}
+                <Button type="submit" disabled={isPending}>Comentar</Button>
+            </div>
         </form>
     )
 }
