@@ -25,6 +25,7 @@ model User {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   completedLesson CompletedLesson[]
+  lessonComments  LessonComment[]
 
   @@map("users")
 }
@@ -102,6 +103,7 @@ model CourseLesson {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   completedLesson CompletedLesson[]
+  comments        LessonComment[]
 
   @@map("course_lessons")
 }
@@ -122,4 +124,26 @@ model CompletedLesson {
   updatedAt DateTime @updatedAt
 
   @@map("completed_lessons")
+}
+
+model LessonComment {
+  id String @id @default(cuid())
+
+  lessonId String
+  lesson   CourseLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  content String
+
+  parentId String?
+
+  parent  LessonComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies LessonComment[] @relation("CommentReplies")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("lesson_comments")
 }

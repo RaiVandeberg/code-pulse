@@ -7,16 +7,18 @@ import { PlyrLayout, plyrLayoutIcons } from "@vidstack/react/player/layouts/plyr
 type VideoPlayerProps = {
     videoId: string;
     autoplay: boolean;
+    onEnd?: () => void;
 
 }
 
-const VideoPlayer = ({ videoId, autoplay }: VideoPlayerProps) => {
+const VideoPlayer = ({ videoId, autoplay, onEnd }: VideoPlayerProps) => {
 
     const userAlreadyInteracted = navigator.userActivation?.hasBeenActive
 
     return (
         <MediaPlayer title="Video da Aula"
             src={`youtube/${videoId}`}
+            onEnded={onEnd}
             autoPlay={autoplay && userAlreadyInteracted}
         >
 
