@@ -9,6 +9,7 @@ import PixIcon from '@/assets/pix.svg'
 
 import { Arrow } from "@radix-ui/react-tooltip";
 import { set } from "date-fns";
+import { CreditCardForm } from "./credit-card";
 
 
 type CheckoutDialogProps = {
@@ -94,7 +95,7 @@ export const CheckoutDialog = ({ open, setOpen, course }: CheckoutDialogProps) =
 
                     {step === 2 && paymentMethod === "PIX" && (
                         <div className="flex flex-col gap-4">
-
+                            <CreditCardForm />
                         </div>
                     )}
                 </div>}
