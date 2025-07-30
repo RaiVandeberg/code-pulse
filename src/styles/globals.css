@@ -116,6 +116,7 @@
   --sidebar-ring: oklch(0.75 0.25 35);
 
   --plyr-color-main: var(--primary);
+  --plyr-border-radius: 0px
 }
 
 
