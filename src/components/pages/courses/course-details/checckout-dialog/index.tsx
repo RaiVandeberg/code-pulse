@@ -1,15 +1,16 @@
 "use client";
+
+import "@/styles/react-credit-card.css";
+
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { ArrowRight, CreditCard, MessageSquareQuote } from "lucide-react";
-import { ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import PixIcon from '@/assets/pix.svg'
 
-import { Arrow } from "@radix-ui/react-tooltip";
-import { set } from "date-fns";
 import { CreditCardForm } from "./credit-card";
+
 
 
 type CheckoutDialogProps = {
@@ -87,15 +88,15 @@ export const CheckoutDialog = ({ open, setOpen, course }: CheckoutDialogProps) =
                         </div>
                     )}
 
-                    {step === 2 && paymentMethod === "CREDIT_CARD" && (
+                    {step === 2 && paymentMethod === "PIX" && (
                         <div>
                             { }
                         </div>
                     )}
 
-                    {step === 2 && paymentMethod === "PIX" && (
+                    {step === 2 && paymentMethod === "CREDIT_CARD" && (
                         <div className="flex flex-col gap-4">
-                            <CreditCardForm />
+                            <CreditCardForm onBack={() => setStep(1)} />
                         </div>
                     )}
                 </div>}
