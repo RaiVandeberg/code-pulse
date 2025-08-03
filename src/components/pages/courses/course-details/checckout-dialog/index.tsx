@@ -10,6 +10,7 @@ import { useState } from "react";
 import PixIcon from '@/assets/pix.svg'
 
 import { CreditCardForm } from "./credit-card";
+import { PixForm } from "./pix";
 
 
 
@@ -26,6 +27,10 @@ export const CheckoutDialog = ({ open, setOpen, course }: CheckoutDialogProps) =
     const handleContinue = () => {
         //TODO VALIDAR SE ESTA LOGADO
         setStep(2);
+    }
+    const handleBack = () => {
+
+        setStep(1)
     }
     const paymentMethods = [
         {
@@ -88,15 +93,15 @@ export const CheckoutDialog = ({ open, setOpen, course }: CheckoutDialogProps) =
                         </div>
                     )}
 
-                    {step === 2 && paymentMethod === "PIX" && (
-                        <div>
-                            { }
-                        </div>
-                    )}
+                    {step === 2 && paymentMethod === "PIX" &&
+
+                        <PixForm onBack={handleBack} />
+
+                    }
 
                     {step === 2 && paymentMethod === "CREDIT_CARD" && (
                         <div className="flex flex-col gap-4">
-                            <CreditCardForm onBack={() => setStep(1)} />
+                            <CreditCardForm onBack={handleBack} />
                         </div>
                     )}
                 </div>}

@@ -45,3 +45,7 @@ export const formatName = (firstName: string, lastName?: string | null) => {
   }
   return `${firstName} ${lastName}`
 }
+
+export const unMockValue = (value: string) => {
+  return value.replace(/[^0-9a-z]/gi, "")
+}
