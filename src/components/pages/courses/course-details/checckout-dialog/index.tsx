@@ -95,7 +95,7 @@ export const CheckoutDialog = ({ open, setOpen, course }: CheckoutDialogProps) =
 
                     {step === 2 && paymentMethod === "PIX" &&
 
-                        <PixForm onBack={handleBack} />
+                        <PixForm onBack={handleBack} course={course} />
 
                     }
 
