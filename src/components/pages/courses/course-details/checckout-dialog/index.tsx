@@ -49,6 +49,10 @@ export const CheckoutDialog = ({ open, setOpen, course }: CheckoutDialogProps) =
         //     Icon: BoletoIcon,
         // }
     ]
+    const handleClose = () => {
+        setOpen(false);
+
+    }
     return (
         <Dialog
             open={open}
@@ -95,7 +99,7 @@ export const CheckoutDialog = ({ open, setOpen, course }: CheckoutDialogProps) =
 
                     {step === 2 && paymentMethod === "PIX" &&
 
-                        <PixForm onBack={handleBack} course={course} />
+                        <PixForm onBack={handleBack} course={course} onClose={handleClose} />
 
                     }
 
