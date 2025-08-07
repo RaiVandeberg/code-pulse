@@ -105,7 +105,7 @@ export const CheckoutDialog = ({ open, setOpen, course }: CheckoutDialogProps) =
 
                     {step === 2 && paymentMethod === "CREDIT_CARD" && (
                         <div className="flex flex-col gap-4">
-                            <CreditCardForm onBack={handleBack} />
+                            <CreditCardForm onBack={handleBack} course={course} onClose={handleClose} />
                         </div>
                     )}
                 </div>}

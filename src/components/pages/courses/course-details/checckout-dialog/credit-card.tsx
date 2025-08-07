@@ -11,14 +11,25 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import Cards from "react-credit-cards-2"
+import { calculateInstallmentsOptions, formatPrice, unMockValue } from "@/lib/utils"
+import { useMemo } from "react"
+import { useMutation } from "@tanstack/react-query"
+import { createCreditCardCheckout } from "@/actions/payment"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+import { on } from "events"
+import axios from "axios"
 
 
 type FormData = z.infer<typeof creditCardCheckoutFormSchema>
 
 type CreditCardFormProps = {
     onBack?: () => void;
+    course?: Course
+    onClose: () => void;
 }
-export const CreditCardForm = ({ onBack }: CreditCardFormProps) => {
+export const CreditCardForm = ({ onBack, course, onClose }: CreditCardFormProps) => {
+    const router = useRouter()
     const form = useForm<FormData>({
         resolver: zodResolver(creditCardCheckoutFormSchema),
         defaultValues: {
@@ -36,18 +47,79 @@ export const CreditCardForm = ({ onBack }: CreditCardFormProps) => {
         }
     })
 
-    const { handleSubmit, watch } = form
+    const { handleSubmit, watch, setError } = form
 
     const formValues = watch()
+    const rawCep = watch("postalCode");
+    const installmentsOptions = useMemo(() => {
 
-    const onSubmit = (data: FormData) => {
+        return calculateInstallmentsOptions(course?.discountPrice ?? course?.price ?? 0)?.map((option) => ({
+            label: `${option.installments}x de ${formatPrice(option.installmentValue)}${option.hasInterest ? " " : " (sem juros)"}`,
+            value: String(option.installments),
+        }))
+    }, [course?.discountPrice, course?.price])
 
+    const { mutateAsync: validateCep, isPending: isValidatingCep } = useMutation({
+        mutationFn: async () => {
+            try {
+                const cep = unMockValue(rawCep);
+                const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+                if (response.data.erro) {
+                    setError("postalCode", { type: "manual", message: "CEP inválido." });
+                    return false
+                }
+                return true
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    })
+    const { mutateAsync: handleCheckout, isPending: isLoading } = useMutation({
+        mutationFn: createCreditCardCheckout,
+        onSuccess: async () => {
+            toast.success("Pagamento realizado com sucesso!")
+            onClose()
+
+            toast.success("Agradecemos pela compra do curso!, voce será redirecionado para a página do curso.");
+
+            await new Promise(resolve => setTimeout(resolve, 4000));
+            router.push(`/courses/${course?.slug}`);
+        },
+        onError: (error) => {
+            console.log(error);
+
+            if (error.name === "NOT_AUTHORIZED") {
+                toast.error(error.message);
+                return;
+            }
+            if (error.name === "CONFLICT") {
+                toast.error("Você já possui acesso ao curso.");
+                onClose();
+                return;
+            }
+
+            toast.error("Erro ao processar o pagamento. Tente novamente mais tarde ou entre em contato com o suporte.");
+        }
+    })
+
+
+    const onSubmit = async (data: FormData) => {
+
+        const isValidCep = await validateCep();
+
+        if (!isValidCep) return;
+
+
+
+        toast.promise(handleCheckout({
+            ...data,
+            courseId: course?.id ?? "",
+        }),
+            { loading: "Processando pagamento..." })
     }
 
-    const installmentsOptions = Array.from({ length: 12 }, (_, i) => ({
-        label: `${i + 1}x`,
-        value: `${i + 1}`,
-    }))
+
+
     return (
         <Form {...form}>
             <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
@@ -90,7 +162,7 @@ export const CreditCardForm = ({ onBack }: CreditCardFormProps) => {
                                 <Select
                                     value={String(field.value)}
                                     onChange={(value) => field.onChange(Number(value))}
-                                    options={installmentsOptions}
+                                    options={installmentsOptions ?? []}
                                     placeholder="Parcelas"
 
                                 />
@@ -113,7 +185,7 @@ export const CreditCardForm = ({ onBack }: CreditCardFormProps) => {
                         Voltar
                     </Button>
 
-                    <Button type="submit">
+                    <Button type="submit" disabled={isLoading || isValidatingCep} className="flex items-center gap-2">
                         Confirmar
                         <ArrowRight />
                     </Button>
