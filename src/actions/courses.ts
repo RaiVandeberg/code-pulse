@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getUser } from "./user";
+import { de } from "date-fns/locale";
 
 type GetCoursesPayload = {
     query: string;
@@ -70,8 +71,8 @@ export const getCourse = async (query: string, queryType: "slug" | "id" = "slug"
 }
 
 
-export const getPurchaseCourse = async () => {
-    const { userId } = await getUser();
+export const getPurchaseCourses = async (detailed = false) => {
+    const { userId } = await getUser(false);
     if (!userId) return [];
 
     const purchasedCourses = await prisma.coursePurchase.findMany({
@@ -79,11 +80,21 @@ export const getPurchaseCourse = async () => {
             userId
         },
         include: {
-            course: true
+            course: detailed ? {
+                include: {
+                    tags: true,
+                    modules: true,
+                },
+            }
+                : true
         }
     })
 
     return purchasedCourses.map((purchase) => purchase.course);
 }
 
+export const getPurchaseCoursesWithDetails = async () => {
+    const purchasedCourses = await getPurchaseCourses(true);
 
+    return purchasedCourses as CourseWithModulesAndTags[];
+}

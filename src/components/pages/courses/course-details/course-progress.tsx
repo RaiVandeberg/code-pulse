@@ -10,6 +10,7 @@ import Link from "next/link"
 import { CheckoutDialog } from "./checckout-dialog"
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
+import { getPurchaseCourses } from "@/actions/courses"
 
 
 type CourseProps = {
@@ -22,16 +23,27 @@ export const CourseProgress = ({ course }: CourseProps) => {
     const searchParam = useSearchParams()
     const checckoutParam = searchParam.get("checkout")
 
-    useEffect(() => {
-        if (checckoutParam === "true") setShowCheckoutDialog(true);
-    }, [checckoutParam])
-    const hasCourse = false
+
+
+    const { data: purchasedCourses } = useQuery({
+        queryKey: queryKeys.purchasedCourses,
+        queryFn: () => getPurchaseCourses(),
+    })
+
+
+    const hasCourse = purchasedCourses?.some((purchasedCourse) => purchasedCourse.id === course.id)
     const { data: courseProgress } = useQuery({
         queryKey: queryKeys.CourseProgress(course.slug),
         queryFn: () => getCourseProgress(course.slug),
         enabled: !!course.slug && hasCourse,
     })
+
     const progress = courseProgress?.progress ?? 0;
+
+    useEffect(() => {
+        if (checckoutParam === "true") setShowCheckoutDialog(true);
+    }, [checckoutParam])
+
     return (
         <aside className="bg-muted rounded-2xl p-6 max-h-max sticky top-0">
             {hasCourse ? (

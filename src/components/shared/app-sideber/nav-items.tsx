@@ -1,6 +1,9 @@
 "use client";
+import { getPurchaseCourses } from "@/actions/courses";
 import { SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarSeparator } from "@/components/ui/sidebar"
+import { queryKeys } from "@/constants/query-key";
 import { useUser } from "@clerk/nextjs";
+import { useQuery } from "@tanstack/react-query";
 import { BookOpen, BookUp2, ChartArea, MessageCircle, SquareDashedBottomCode, Trophy, User } from "lucide-react"
 import Link from "next/link";
 import path from "path"
@@ -17,17 +20,24 @@ export const NavItems = () => {
     const { user } = useUser();
     const isAdmin = user?.publicMetadata?.role === "admin";
 
+    const { data: purchasedCourses } = useQuery({
+        queryKey: queryKeys.purchasedCourses,
+        queryFn: () => getPurchaseCourses(),
+    })
+
     const NavItems: NavItems[] = [
         {
             label: "Cursos",
             path: "/",
             icon: SquareDashedBottomCode
         },
-        {
-            label: "Meus Cursos",
-            path: "/my-cursos",
-            icon: BookUp2
-        },
+        ...(!!purchasedCourses?.length ? [
+            {
+                label: "Meus Cursos",
+                path: "/my-course",
+                icon: BookUp2
+            },
+        ] : []),
         {
             label: "Ranking",
             path: "/ranking",

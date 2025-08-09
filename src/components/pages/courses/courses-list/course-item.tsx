@@ -7,12 +7,13 @@ import Link from "next/link"
 
 type CourseItemProps = {
     course: CourseWithModulesAndTags
+    redirectTo?: "lessons" | "details"
 };
 
-export const CourseItem = ({ course }: CourseItemProps) => {
+export const CourseItem = ({ course, redirectTo = "details" }: CourseItemProps) => {
     return (
         <Link className="border rounded-lg bg-card overflow-hidden hover:border-primary transition-all "
-            href={`/courses/details/${course.slug}`}>
+            href={redirectTo === "lessons" ? `/courses/${course.slug}` : `/courses/details/${course.slug}`}>
             <Image
                 src={course.thumbnail}
                 alt={`Thumbnail do curso ${course.title}`}
