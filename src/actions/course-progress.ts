@@ -22,6 +22,18 @@ export const markLessonAsCompleted = async ({ courseSlug, lessonId }: CompleteLe
     if (!course) {
         throw new Error("Course not found")
     }
+
+    const userHasCourse = await prisma.coursePurchase.findFirst({
+        where: {
+            userId,
+            courseId: course.id,
+        },
+    })
+
+    if (!userHasCourse) {
+        throw new Error("Você não tem acesso a este curso")
+    }
+
     const isAlreadyCompleted = await prisma.completedLesson.findFirst({
         where: {
             lessonId,

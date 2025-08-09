@@ -48,6 +48,17 @@ export const createLessonComment = async ({ courseSlug, lessonId, content, paren
         throw new Error("Curso não encontrado")
     }
 
+    const userHasCourse = await prisma.coursePurchase.findFirst({
+        where: {
+            userId,
+            courseId: course.id,
+        },
+    })
+
+    if (!userHasCourse) {
+        throw new Error("Você não tem acesso a este curso")
+    }
+
     const lesson = await prisma.courseLesson.findUnique({
         where: { id: lessonId }
     })

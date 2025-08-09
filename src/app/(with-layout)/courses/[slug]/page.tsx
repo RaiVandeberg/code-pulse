@@ -1,5 +1,5 @@
 import { getCourseProgress } from "@/actions/course-progress";
-import { getCourse } from "@/actions/courses";
+import { getCourse, getPurchaseCourse } from "@/actions/courses";
 import { Skeleton } from "@/components/ui/skeleton";
 import { notFound, redirect } from "next/dist/client/components/navigation";
 
@@ -16,6 +16,14 @@ export default async function CoursePage({ params }: CoursePageProps) {
     const { course } = await getCourse(slug);
     if (!course) return notFound();
 
+    const purchasedCourses = await getPurchaseCourse();
+
+    const isPurchased = purchasedCourses.some((purchasedCourse) => purchasedCourse.id === course.id);
+
+
+    if (!isPurchased) {
+        return redirect(`/courses/details/${slug}`);
+    }
     const { completedLessons } = await getCourseProgress(slug);
 
     const allLessons = course.modules.flatMap((module) => module.lessons);

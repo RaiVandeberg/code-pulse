@@ -11,6 +11,9 @@ import PixIcon from '@/assets/pix.svg'
 
 import { CreditCardForm } from "./credit-card";
 import { PixForm } from "./pix";
+import { useUser } from "@clerk/nextjs";
+import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
 
 
 
@@ -20,12 +23,21 @@ type CheckoutDialogProps = {
     course: Course;
 }
 export const CheckoutDialog = ({ open, setOpen, course }: CheckoutDialogProps) => {
-
+    const { user } = useUser();
+    const pathname = usePathname();
+    const router = useRouter();
     const [step, setStep] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState<"PIX" | "CREDIT_CARD" | "BOLETO">("PIX");
 
     const handleContinue = () => {
-        //TODO VALIDAR SE ESTA LOGADO
+
+        if (!user) {
+            toast.info("Você precisa estar logado para concluir a compra.");
+
+            router.push(`/auth/sign-in?redirect_url=${pathname}?checkout=true`);
+            return;
+        }
+
         setStep(2);
     }
     const handleBack = () => {

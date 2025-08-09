@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { getUser } from "./user";
 
 type GetCoursesPayload = {
     query: string;
@@ -66,6 +67,23 @@ export const getCourse = async (query: string, queryType: "slug" | "id" = "slug"
         }
     })
     return { course };
+}
+
+
+export const getPurchaseCourse = async () => {
+    const { userId } = await getUser();
+    if (!userId) return [];
+
+    const purchasedCourses = await prisma.coursePurchase.findMany({
+        where: {
+            userId
+        },
+        include: {
+            course: true
+        }
+    })
+
+    return purchasedCourses.map((purchase) => purchase.course);
 }
 
 
