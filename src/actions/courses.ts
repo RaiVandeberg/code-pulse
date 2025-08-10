@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getUser } from "./user";
 import { de } from "date-fns/locale";
+import { checkRole } from "@/lib/clerk";
 
 type GetCoursesPayload = {
     query: string;
@@ -97,4 +98,25 @@ export const getPurchaseCoursesWithDetails = async () => {
     const purchasedCourses = await getPurchaseCourses(true);
 
     return purchasedCourses as CourseWithModulesAndTags[];
+}
+
+export const getAdminCourses = async () => {
+
+    const isAdmin = await checkRole("admin");
+
+    if (!isAdmin) {
+        throw new Error("Unauthorized");
+    }
+
+    const courses = await prisma.course.findMany({
+        include: {
+            tags: true,
+            modules: true,
+        },
+        orderBy: {
+            createdAt: "desc",
+        }
+    });
+
+    return courses;
 }
