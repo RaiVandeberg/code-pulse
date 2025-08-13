@@ -2,14 +2,19 @@
 
 import { creatCourseTags, getCourseTags } from "@/actions/courses";
 import { BackButton } from "@/components/ui/back-button";
+import { Dropzone } from "@/components/ui/dropzone";
 import { FormField } from "@/components/ui/form/field";
 import { InputField } from "@/components/ui/form/input-fiel";
 import { Form, FormItem, FormLabel } from "@/components/ui/form/primitives";
+import { SelectField } from "@/components/ui/form/select-field";
 import MultipleSelector, { Option } from "@/components/ui/multiple-select";
 import { Separator } from "@/components/ui/separator";
 import { queryKeys } from "@/constants/query-key";
+import { CourseDifficulty } from "@/generated/prisma";
+import { formatDificulty } from "@/lib/utils";
 import { CreateCourseFormData, createCourseSchema } from "@/server/schemas/course";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Value } from "@radix-ui/react-select";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 
@@ -77,6 +82,12 @@ export const CourseForm = () => {
         console.log(data);
     };
 
+    const difficultyOptions = [
+        { label: formatDificulty(CourseDifficulty.EASY), value: CourseDifficulty.EASY },
+        { label: formatDificulty(CourseDifficulty.MEDIUM), value: CourseDifficulty.MEDIUM },
+        { label: formatDificulty(CourseDifficulty.HARD), value: CourseDifficulty.HARD },
+    ];
+
     return <>
         <BackButton />
 
@@ -129,6 +140,20 @@ export const CourseForm = () => {
                             value={selectTags}
                             onChange={(value) => handleChangeTags(value)}
                             disabled={isAddingTags}
+                        />
+                    )}
+                </FormField>
+
+                <SelectField
+                    name="difficulty"
+                    label="Dificuldade"
+                    options={difficultyOptions}
+                />
+                <FormField className="col-span-full" name="thumbnail" label="Thumbnail">
+                    {({ field }) => (
+                        <Dropzone
+                            file={field.value}
+                            setFiles={field.onChange}
                         />
                     )}
                 </FormField>
