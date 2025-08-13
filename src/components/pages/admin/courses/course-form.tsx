@@ -3,6 +3,7 @@
 import { creatCourseTags, getCourseTags } from "@/actions/courses";
 import { BackButton } from "@/components/ui/back-button";
 import { Dropzone } from "@/components/ui/dropzone";
+import { Editor } from "@/components/ui/editor";
 import { FormField } from "@/components/ui/form/field";
 import { InputField } from "@/components/ui/form/input-fiel";
 import { Form, FormItem, FormLabel } from "@/components/ui/form/primitives";
@@ -154,6 +155,15 @@ export const CourseForm = () => {
                         <Dropzone
                             file={field.value}
                             setFiles={field.onChange}
+                        />
+                    )}
+                </FormField>
+
+                <FormField name="description" label="Descrição" className="col-span-full">
+                    {({ field }) => (
+                        <Editor
+                            value={field.value}
+                            onChange={field.onChange}
                         />
                     )}
                 </FormField>
