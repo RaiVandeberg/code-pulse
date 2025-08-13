@@ -1,17 +1,25 @@
 "use client";
 
+import { creatCourseTags, getCourseTags } from "@/actions/courses";
 import { BackButton } from "@/components/ui/back-button";
+import { FormField } from "@/components/ui/form/field";
 import { InputField } from "@/components/ui/form/input-fiel";
-import { Form } from "@/components/ui/form/primitives";
+import { Form, FormItem, FormLabel } from "@/components/ui/form/primitives";
+import MultipleSelector, { Option } from "@/components/ui/multiple-select";
 import { Separator } from "@/components/ui/separator";
+import { queryKeys } from "@/constants/query-key";
 import { CreateCourseFormData, createCourseSchema } from "@/server/schemas/course";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import { Resolver, useForm } from "react-hook-form";
+import { set } from "zod";
 
 
 export const CourseForm = () => {
 
+    const queryClient = useQueryClient();
     const methods = useForm<CreateCourseFormData>({
         resolver: zodResolver(createCourseSchema) as Resolver<CreateCourseFormData>,
         defaultValues: {
@@ -26,7 +34,45 @@ export const CourseForm = () => {
             modules: [],
         },
     });
-    const { handleSubmit, control } = methods
+    const { handleSubmit, control, setValue, watch } = methods
+
+    const tagIds = watch("tagsIds");
+
+    const { data: tagsData } = useQuery({
+        queryKey: queryKeys.courseTags,
+        queryFn: getCourseTags,
+    })
+
+    const { mutate: handleCreateTag, isPending: isAddingTags } = useMutation({
+        mutationFn: creatCourseTags,
+        onSuccess: (newTag) => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.courseTags });
+            setValue("tagsIds", [...tagIds, newTag.id], { shouldValidate: true });
+        }
+    });
+
+    const tagsOptions = useMemo(() => {
+        return (tagsData ?? []).map((tag) => ({
+            label: tag.name,
+            value: tag.id,
+        }))
+    }, [tagsData])
+
+    const selectTags = useMemo(() => {
+        return tagsOptions.filter((tag) => tagIds.includes(tag.value));
+    }, [tagsOptions, tagIds])
+
+    const handleChangeTags = (value: Option[]) => {
+        const tagsToCreate = value.find((tag) => !tagsOptions.find((t) => t.value === tag.value));
+        if (tagsToCreate) {
+            handleCreateTag(tagsToCreate.value);
+            return
+        }
+        setValue("tagsIds", value.map((tag) => tag.value),
+            { shouldValidate: true }
+        );
+    };
+
     const onSubmit = (data: CreateCourseFormData) => {
         console.log(data);
     };
@@ -61,8 +107,6 @@ export const CourseForm = () => {
 
                 />
 
-
-
                 <InputField
                     name="price"
                     label="Preço"
@@ -76,6 +120,18 @@ export const CourseForm = () => {
                     control={control}
                     placeholder="R$ 79,90"
                 />
+                <FormField control={control} name="tagsIds" label="Tags">
+                    {() => (
+                        <MultipleSelector
+                            placeholder="Selecione as tags"
+                            options={tagsOptions}
+                            creatable
+                            value={selectTags}
+                            onChange={(value) => handleChangeTags(value)}
+                            disabled={isAddingTags}
+                        />
+                    )}
+                </FormField>
             </form>
         </Form>
     </>

@@ -1,5 +1,4 @@
 "use client";
-
 import { ReactNode } from "react";
 import { Control, ControllerFieldState, ControllerRenderProps } from "react-hook-form";
 import {
@@ -7,45 +6,50 @@ import {
     FormItem,
     FormLabel,
     FormControl,
-    FormMessage
+    FormMessage,
 } from "./primitives";
 import { Input } from "../input";
+
 export type FormFieldProps = {
     name: string;
     label?: string;
     required?: boolean;
     className?: string;
-    control?: Control<any, any>
+    control?: Control<any, any>;
     children?: (params: {
         field: ControllerRenderProps<any, any>;
         fieldState: ControllerFieldState;
     }) => ReactNode;
+};
 
-
-
-}
-
-export const FormField = ({ name, label, required, className, control, children, ...props }: FormFieldProps) => {
+export const FormField = ({
+    name,
+    label,
+    required,
+    className,
+    control,
+    children,
+    ...props
+}: FormFieldProps) => {
     return (
         <FormFieldPrimitive
             control={control}
             name={name}
+
+            rules={required ? { required: "Campo obrigatório" } : undefined}
             render={({ field, fieldState }) => (
                 <FormItem className={className}>
-                    {label && (
-                        <FormLabel htmlFor={name}>
-                            {label}
-                        </FormLabel>
-                    )}
+                    {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
                     <FormControl>
-                        {children ?
-                            (children({ field, fieldState })
-                            ) : (
-                                <Input {...field} {...props} id={name} />
-                            )}
+                        {children ? (
+                            children({ field, fieldState })
+                        ) : (
+                            <Input {...field} id={name} {...props} />
+                        )}
                     </FormControl>
+                    <FormMessage />
                 </FormItem>
             )}
         />
-    )
-}
+    );
+};

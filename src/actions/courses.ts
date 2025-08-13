@@ -120,3 +120,26 @@ export const getAdminCourses = async () => {
 
     return courses;
 }
+
+export const getCourseTags = async () => {
+    const tags = await prisma.courseTag.findMany({
+        orderBy: {
+            name: "asc",
+        }
+    });
+    return tags;
+}
+
+export const creatCourseTags = async (name: string) => {
+
+    const isAdmin = await checkRole("admin")
+    if (!isAdmin) throw new Error("Unauthorized")
+
+    const tag = await prisma.courseTag.create({
+        data: {
+            name
+        }
+    })
+
+    return tag
+} 
