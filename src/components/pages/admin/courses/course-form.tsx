@@ -21,6 +21,7 @@ import { useMemo } from "react";
 
 import { Resolver, useForm } from "react-hook-form";
 import { set } from "zod";
+import { ModulesList } from "./module-list";
 
 
 export const CourseForm = () => {
@@ -40,7 +41,7 @@ export const CourseForm = () => {
             modules: [],
         },
     });
-    const { handleSubmit, control, setValue, watch } = methods
+    const { handleSubmit, setValue, watch } = methods
 
     const tagIds = watch("tagsIds");
 
@@ -106,7 +107,7 @@ export const CourseForm = () => {
                 <InputField
                     name="title"
                     label="Título do Curso"
-                    control={control}
+
                     placeholder="Curso de Java"
 
                 />
@@ -114,7 +115,7 @@ export const CourseForm = () => {
                 <InputField
                     name="shortDescription"
                     label="Descrição Curta"
-                    control={control}
+
                     placeholder="Aprenda Java do zero ao avançado"
 
                 />
@@ -122,17 +123,17 @@ export const CourseForm = () => {
                 <InputField
                     name="price"
                     label="Preço"
-                    control={control}
+
                     placeholder="R$ 99,90"
 
                 />
                 <InputField
                     name="discountPrice"
                     label="Preço com Desconto(opcional)"
-                    control={control}
+
                     placeholder="R$ 79,90"
                 />
-                <FormField control={control} name="tagsIds" label="Tags">
+                <FormField name="tagsIds" label="Tags">
                     {() => (
                         <MultipleSelector
                             placeholder="Selecione as tags"
@@ -167,6 +168,10 @@ export const CourseForm = () => {
                         />
                     )}
                 </FormField>
+
+                <Separator className="my-2 col-span-full" />
+
+                <ModulesList />
             </form>
         </Form>
     </>
