@@ -44,16 +44,29 @@ export const ManageLessonDialog = ({ open, setOpen, moduleIndex, initialData, se
             durationInMs: 0,
         }
     });
-
+    const isEditing = !!initialData;
     const onSubmit = (data: LessonsFormData) => {
         const modules = getValues("modules");
 
-        //  TODO EDIT LESSONS
-        modules[moduleIndex].lessons.push({
-            ...data,
-            id: createId(),
-            order: 1
-        });
+        if (isEditing) {
+            modules[moduleIndex].lessons = modules[moduleIndex].lessons.map((lesson) => {
+                if (lesson.id === initialData.id) {
+                    return {
+                        ...lesson,
+                        ...data
+                    }
+                }
+                return lesson;
+            }
+            )
+        } else {
+            modules[moduleIndex].lessons.push({
+                ...data,
+                id: createId(),
+                order: 1
+            });
+        }
+
 
         setValue("modules", modules, { shouldValidate: true });
         resetForm(getValues())
@@ -62,7 +75,7 @@ export const ManageLessonDialog = ({ open, setOpen, moduleIndex, initialData, se
     }
 
     const { handleSubmit, reset } = form
-    const isEditing = !!initialData;
+
 
 
     useEffect(() => {

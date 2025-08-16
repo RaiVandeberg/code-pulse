@@ -1,6 +1,6 @@
 "use client";
 
-import { creatCourseTags, getCourseTags } from "@/actions/courses";
+import { creatCourseTags, createCourse, getCourseTags } from "@/actions/courses";
 import { BackButton } from "@/components/ui/back-button";
 import { Dropzone } from "@/components/ui/dropzone";
 import { Editor } from "@/components/ui/editor";
@@ -22,10 +22,14 @@ import { useMemo } from "react";
 import { Resolver, useForm } from "react-hook-form";
 import { set } from "zod";
 import { ModulesList } from "./module-list";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 
 export const CourseForm = () => {
 
+    const router = useRouter();
     const queryClient = useQueryClient();
     const methods = useForm<CreateCourseFormData>({
         resolver: zodResolver(createCourseSchema) as Resolver<CreateCourseFormData>,
@@ -36,14 +40,14 @@ export const CourseForm = () => {
             discountPrice: "" as unknown as number,
             description: "",
             difficulty: "EASY",
-            tagsIds: [],
+            tagIds: [],
             thumbnail: undefined as unknown as File,
             modules: [],
         },
     });
     const { handleSubmit, setValue, watch } = methods
 
-    const tagIds = watch("tagsIds");
+    const tagIds = watch("tagIds");
 
     const { data: tagsData } = useQuery({
         queryKey: queryKeys.courseTags,
@@ -54,7 +58,7 @@ export const CourseForm = () => {
         mutationFn: creatCourseTags,
         onSuccess: (newTag) => {
             queryClient.invalidateQueries({ queryKey: queryKeys.courseTags });
-            setValue("tagsIds", [...tagIds, newTag.id], { shouldValidate: true });
+            setValue("tagIds", [...tagIds, newTag.id], { shouldValidate: true });
         }
     });
 
@@ -75,13 +79,37 @@ export const CourseForm = () => {
             handleCreateTag(tagsToCreate.value);
             return
         }
-        setValue("tagsIds", value.map((tag) => tag.value),
+        setValue("tagIds", value.map((tag) => tag.value),
             { shouldValidate: true }
         );
     };
 
+    const { mutate: handleCreateCourse, isPending: isCreatingCourse } = useMutation({
+        mutationFn: createCourse,
+        onSuccess: () => {
+            toast.success("Curso criado com sucesso!");
+            router.push("/admin/courses");
+        },
+        onError: (error) => {
+            console.error("Erro ao criar curso:", error);
+            toast.error("Erro ao criar curso, tente novamente mais tarde");
+        }
+    });
+
     const onSubmit = (data: CreateCourseFormData) => {
-        console.log(data);
+        const dataWithOrder: CreateCourseFormData = {
+            ...data,
+            modules: data.modules.map((module, index) => ({
+                ...module,
+                order: index + 1,
+                lessons: module.lessons.map((lesson, lessonIndex) => ({
+                    ...lesson,
+                    order: lessonIndex + 1,
+                })),
+            })),
+        };
+
+        handleCreateCourse(dataWithOrder);
     };
 
     const difficultyOptions = [
@@ -133,7 +161,7 @@ export const CourseForm = () => {
 
                     placeholder="R$ 79,90"
                 />
-                <FormField name="tagsIds" label="Tags">
+                <FormField name="tagIds" label="Tags">
                     {() => (
                         <MultipleSelector
                             placeholder="Selecione as tags"
@@ -172,6 +200,9 @@ export const CourseForm = () => {
                 <Separator className="my-2 col-span-full" />
 
                 <ModulesList />
+                <div className="col-span-full flex justify-end">
+                    <Button type="submit" disabled={isCreatingCourse}>Criar Curso</Button>
+                </div>
             </form>
         </Form>
     </>

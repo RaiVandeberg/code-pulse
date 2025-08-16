@@ -4,6 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { getUser } from "./user";
 import { de } from "date-fns/locale";
 import { checkRole } from "@/lib/clerk";
+import { CreateCourseFormData, createCourseSchema } from "@/server/schemas/course";
+import slugify from "slugify"
+import { revalidatePath } from "next/cache";
 
 type GetCoursesPayload = {
     query: string;
@@ -142,4 +145,72 @@ export const creatCourseTags = async (name: string) => {
     })
 
     return tag
-} 
+}
+
+export const createCourse = async (rawData: CreateCourseFormData) => {
+    const isAdmin = await checkRole("admin");
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const data = createCourseSchema.parse(rawData);
+
+    const rawSlug = slugify(data.title, {
+        lower: true,
+        strict: true
+    })
+
+    const slugCount = await prisma.course.count({
+        where: {
+            slug: {
+                startsWith: rawSlug
+            }
+        }
+    })
+
+    const slug = slugCount > 0 ? `${rawSlug}-${slugCount + 1}` : rawSlug;
+
+    // TODO UPLOAD THUMBNAIL
+    const course = await prisma.course.create({
+        data: {
+            title: data.title,
+            description: data.description,
+            shortDescription: data.shortDescription,
+            price: data.price,
+            discountPrice: data.discountPrice,
+            difficulty: data.difficulty,
+            slug,
+            status: "DRAFT",
+            thumbnail: "",
+            tags: {
+                connect: data.tagIds.map((id) => ({
+                    id
+                }))
+            },
+            modules: {
+                create: data.modules.map((mod) => ({
+                    description: mod.description,
+                    title: mod.title,
+                    order: mod.order,
+                    id: mod.id,
+                    lessons: {
+                        create: mod.lessons.map((lesson) => ({
+                            id: lesson.id,
+                            title: lesson.title,
+                            description: lesson.description,
+                            videoId: lesson.videoId,
+                            durationInMs: lesson.durationInMs,
+                            order: lesson.order,
+
+                        }))
+                    }
+
+
+                }))
+            }
+        }
+
+    })
+
+    revalidatePath("/admin/courses")
+    return course
+
+}
