@@ -2,11 +2,12 @@
 
 import { prisma } from "@/lib/prisma";
 import { getUser } from "./user";
-import { de } from "date-fns/locale";
+import { de, th } from "date-fns/locale";
 import { checkRole } from "@/lib/clerk";
 import { CreateCourseFormData, createCourseSchema } from "@/server/schemas/course";
 import slugify from "slugify"
 import { revalidatePath } from "next/cache";
+import { uploadFile } from "./upload";
 
 type GetCoursesPayload = {
     query: string;
@@ -168,7 +169,10 @@ export const createCourse = async (rawData: CreateCourseFormData) => {
 
     const slug = slugCount > 0 ? `${rawSlug}-${slugCount + 1}` : rawSlug;
 
-    // TODO UPLOAD THUMBNAIL
+    const { url: thumbnailUrl } = await uploadFile({
+        file: data.thumbnail,
+        path: `courses-thumbnails`
+    })
     const course = await prisma.course.create({
         data: {
             title: data.title,
@@ -179,7 +183,7 @@ export const createCourse = async (rawData: CreateCourseFormData) => {
             difficulty: data.difficulty,
             slug,
             status: "DRAFT",
-            thumbnail: "",
+            thumbnail: thumbnailUrl,
             tags: {
                 connect: data.tagIds.map((id) => ({
                     id
