@@ -76,9 +76,6 @@ export const Editor = ({ value, onChange }: EditorProps) => {
             <div className="flex w-full items-center py-2 px-2 justify-between border-b  sticky top-0 left-0 bg-background z-20">
                 <ToolbarProvider editor={editor}>
                     <div className="flex items-center gap-2">
-
-
-
                         <BoldToolbar />
                         <ItalicToolbar />
                         <StrikeThroughToolbar />

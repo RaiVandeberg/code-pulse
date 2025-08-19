@@ -2,12 +2,12 @@
 
 import { prisma } from "@/lib/prisma";
 import { getUser } from "./user";
-import { de, th } from "date-fns/locale";
+import { da, de, is, th } from "date-fns/locale";
 import { checkRole } from "@/lib/clerk";
-import { CreateCourseFormData, createCourseSchema } from "@/server/schemas/course";
+import { CreateCourseFormData, createCourseSchema, UpdateCourseFormData, updateCourseSchema } from "@/server/schemas/course";
 import slugify from "slugify"
 import { revalidatePath } from "next/cache";
-import { uploadFile } from "./upload";
+import { deleteFile, uploadFile } from "./upload";
 
 type GetCoursesPayload = {
     query: string;
@@ -216,5 +216,79 @@ export const createCourse = async (rawData: CreateCourseFormData) => {
 
     revalidatePath("/admin/courses")
     return course
+
+}
+
+export const updateCourse = async (rawData: UpdateCourseFormData) => {
+
+    const isAdmin = await checkRole("admin");
+
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const data = updateCourseSchema.parse(rawData);
+
+    const course = await prisma.course.findUnique({
+        where: {
+            id: data.id
+        },
+        include: {
+            tags: true
+        }
+    })
+
+    if (!course) throw new Error("Course not found");
+
+    let slug = course.slug;
+    let thumbnailUrl = course.thumbnail;
+
+    if (data.title !== course.title) {
+        const rawSlug = slugify(data.title, {
+            lower: true,
+            strict: true
+        })
+        const slugCount = await prisma.course.count({
+            where: {
+                slug: {
+                    startsWith: rawSlug
+                }
+            }
+        })
+
+        slug = slugCount > 0 ? `${rawSlug}-${slugCount + 1}` : rawSlug;
+    }
+
+    if (data.thumbnail) {
+        const { url: newThumbnailUrl } = await uploadFile({
+            file: data.thumbnail,
+            path: `courses-thumbnails`
+        })
+
+        thumbnailUrl = newThumbnailUrl;
+
+        await deleteFile(course.thumbnail)
+    }
+
+    const updatedCourse = await prisma.course.update({
+        where: {
+            id: data.id,
+        },
+        data: {
+            title: data.title,
+            shortDescription: data.shortDescription,
+            description: data.description,
+            price: data.price,
+            discountPrice: data.discountPrice,
+            thumbnail: thumbnailUrl,
+            slug,
+            tags: {
+                set: data.tagIds.map((id) => ({ id }))
+            }
+        }
+    })
+
+    revalidatePath("/")
+    revalidatePath("/admin/courses")
+
+    return updatedCourse;
 
 }

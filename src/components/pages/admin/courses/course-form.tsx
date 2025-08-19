@@ -1,6 +1,6 @@
 "use client";
 
-import { creatCourseTags, createCourse, getCourseTags } from "@/actions/courses";
+import { creatCourseTags, createCourse, getCourseTags, updateCourse } from "@/actions/courses";
 import { BackButton } from "@/components/ui/back-button";
 import { Dropzone } from "@/components/ui/dropzone";
 import { Editor } from "@/components/ui/editor";
@@ -12,25 +12,37 @@ import MultipleSelector, { Option } from "@/components/ui/multiple-select";
 import { Separator } from "@/components/ui/separator";
 import { queryKeys } from "@/constants/query-key";
 import { CourseDifficulty } from "@/generated/prisma";
-import { formatDificulty } from "@/lib/utils";
+import { formatDificulty, urlToFile } from "@/lib/utils";
 import { CreateCourseFormData, createCourseSchema } from "@/server/schemas/course";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Value } from "@radix-ui/react-select";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Resolver, useForm } from "react-hook-form";
 import { set } from "zod";
 import { ModulesList } from "./module-list";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 
-export const CourseForm = () => {
+type CourseFormInitialData = Omit<CreateCourseFormData, "thumbnail"> & {
+    thumbnailUrl: string;
+}
+
+type CourseFormProps = {
+    initialData?: CourseFormInitialData;
+}
+
+export const CourseForm = ({ initialData }: CourseFormProps) => {
 
     const router = useRouter();
     const queryClient = useQueryClient();
+    const [initialDataIsSet, setInitialDataIsSet] = useState(false);
+    const params = useParams()
+    const isEditing = !!initialData
+    const courseId = params.courseId as string;
     const methods = useForm<CreateCourseFormData>({
         resolver: zodResolver(createCourseSchema) as Resolver<CreateCourseFormData>,
         defaultValues: {
@@ -45,7 +57,23 @@ export const CourseForm = () => {
             modules: [],
         },
     });
-    const { handleSubmit, setValue, watch } = methods
+    const { handleSubmit, setValue, watch, reset, formState: { dirtyFields } } = methods
+
+    const setInitialData = useCallback(async (data: CourseFormInitialData) => {
+        const thumbnailFile = await urlToFile(data.thumbnailUrl);
+
+        reset({
+            ...data,
+            thumbnail: thumbnailFile,
+        });
+        setInitialDataIsSet(true);
+    }, [reset]);
+
+    useEffect(() => {
+        if (initialData) {
+            setInitialData(initialData);
+        }
+    }, [initialData, setInitialData]);
 
     const tagIds = watch("tagIds");
 
@@ -84,6 +112,25 @@ export const CourseForm = () => {
         );
     };
 
+    const { mutate: handleUpdateCourse, isPending: isUpdatingCourse } = useMutation({
+        mutationFn: async (data: CreateCourseFormData) => {
+            if (!initialData) return
+
+            await updateCourse({
+                id: courseId,
+                ...data,
+                thumbnail: dirtyFields.thumbnail ? data.thumbnail : undefined,
+            })
+        },
+        onSuccess: () => {
+            toast.success("Curso atualizado com sucesso!");
+        },
+        onError: (error) => {
+            console.error("Erro ao atualizar curso:", error);
+            toast.error("Erro ao atualizar curso, tente novamente mais tarde");
+        }
+    });
+
     const { mutate: handleCreateCourse, isPending: isCreatingCourse } = useMutation({
         mutationFn: createCourse,
         onSuccess: () => {
@@ -108,6 +155,10 @@ export const CourseForm = () => {
                 })),
             })),
         };
+        if (isEditing) {
+            handleUpdateCourse(dataWithOrder);
+            return
+        }
 
         handleCreateCourse(dataWithOrder);
     };
@@ -122,9 +173,9 @@ export const CourseForm = () => {
         <BackButton />
 
         <div>
-            <h1 className="text-2xl font-bold">Criar Curso</h1>
+            <h1 className="text-2xl font-bold">{isEditing ? "Editar Curso" : "Criar Curso"}</h1>
 
-            <p className="text-muted-foreground mt-2">Preencha os dados abaixo para criar um novo curso.</p>
+            <p className="text-muted-foreground mt-2">Preencha os dados abaixo para {isEditing ? "editar" : "criar"} um novo curso.</p>
         </div>
 
         <Separator className="my-2" />
@@ -191,6 +242,7 @@ export const CourseForm = () => {
                 <FormField name="description" label="Descrição" className="col-span-full">
                     {({ field }) => (
                         <Editor
+                            key={`editor-field-${initialDataIsSet}`}
                             value={field.value}
                             onChange={field.onChange}
                         />
@@ -201,7 +253,7 @@ export const CourseForm = () => {
 
                 <ModulesList />
                 <div className="col-span-full flex justify-end">
-                    <Button type="submit" disabled={isCreatingCourse}>Criar Curso</Button>
+                    <Button type="submit" disabled={isCreatingCourse}> {isEditing ? "Atualizar Curso" : "Criar Curso"}</Button>
                 </div>
             </form>
         </Form>

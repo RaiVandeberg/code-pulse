@@ -1,7 +1,11 @@
 "use server"
 
-import { S3Client, PutObjectCommand, } from "@aws-sdk/client-s3"
+import { checkRole } from "@/lib/clerk";
+import { prisma } from "@/lib/prisma";
+import { UpdateCourseFormData, updateCourseSchema } from "@/server/schemas/course";
+import { S3Client, PutObjectCommand, DeleteObjectCommand, } from "@aws-sdk/client-s3"
 import { createId } from "@paralleldrive/cuid2";
+import slugify from "slugify";
 
 const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const CLOUDFLARE_ACCESS_ID = process.env.CLOUDFLARE_ACCESS_ID;
@@ -59,4 +63,18 @@ export const uploadFile = async ({ file, path }: UploadFileParams) => {
     return {
         url: fileUrl,
     }
+}
+
+
+
+export const deleteFile = async (url: string) => {
+    const objectKey = url.split(`${CLOUDFLARE_FILE_BASE_PATH}/`)[1]
+
+    const cmd = new DeleteObjectCommand({
+        Bucket: CLOUDFLARE_R2_BUCKET_NAME,
+        Key: objectKey
+    })
+
+    await S3.send(cmd)
+
 }
