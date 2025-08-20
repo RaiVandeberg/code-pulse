@@ -1,6 +1,6 @@
 "use client";
 
-import { creatCourseTags, createCourse, getCourseTags, updateCourse } from "@/actions/courses";
+import { creatCourseTags, createCourse, createCourseModules, deleteCourseLessons, deleteCourseModules, getCourseTags, revalidateCourseDetails, updateCourse, updateCourseModules } from "@/actions/courses";
 import { BackButton } from "@/components/ui/back-button";
 import { Dropzone } from "@/components/ui/dropzone";
 import { Editor } from "@/components/ui/editor";
@@ -25,6 +25,7 @@ import { ModulesList } from "./module-list";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
+import { dequal } from "dequal";
 
 
 type CourseFormInitialData = Omit<CreateCourseFormData, "thumbnail"> & {
@@ -121,9 +122,46 @@ export const CourseForm = ({ initialData }: CourseFormProps) => {
                 ...data,
                 thumbnail: dirtyFields.thumbnail ? data.thumbnail : undefined,
             })
+
+            const isModulesUpdated = !dequal(initialData.modules, data.modules)
+
+            if (!isModulesUpdated) {
+                await revalidateCourseDetails(courseId);
+                return
+            }
+
+            const removedModules = initialData.modules.filter((mod) => !data.modules.find((m) => m.id === mod.id));
+
+            const allLessons = data.modules.flatMap((mod) => mod.lessons);
+            const allInitialLessons = initialData.modules.flatMap((mod) => mod.lessons);
+
+            const removedLessons = allInitialLessons.filter((lesson) => !allLessons.find((l) => l.id === lesson.id));
+
+            const modulesToCreate = data.modules.filter((mod) => !initialData.modules.find((m) => m.id === mod.id));
+
+            const modulesToUpdate = data.modules.filter((mod) => !removedModules.find((m) => m.id === mod.id) && !modulesToCreate.find((m) => m.id === mod.id));
+
+            if (!!removedLessons.length) {
+                await deleteCourseLessons(removedLessons.map((lesson) => lesson.id));
+            }
+
+            if (!!removedModules.length) {
+                await deleteCourseModules(removedModules.map((mod) => mod.id));
+            }
+
+            if (!!modulesToCreate.length) {
+                await createCourseModules(courseId, modulesToCreate);
+            }
+
+            if (!!modulesToUpdate.length) {
+                await updateCourseModules(modulesToUpdate);
+            }
+
+            await revalidateCourseDetails(courseId);
         },
         onSuccess: () => {
             toast.success("Curso atualizado com sucesso!");
+            router.push("/admin/courses");
         },
         onError: (error) => {
             console.error("Erro ao atualizar curso:", error);
