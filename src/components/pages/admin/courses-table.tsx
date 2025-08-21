@@ -1,16 +1,20 @@
 "use client"
+import { deleteCourse, updateCourseStatus } from "@/actions/courses";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
 import { formatPrice, formatStatus } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { ro } from "date-fns/locale";
-import { Pencil, Send, Trash2 } from "lucide-react";
+import { is, ro } from "date-fns/locale";
+import { Archive, Pencil, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 
 type CoursesTableProps = {
@@ -20,6 +24,24 @@ type CoursesTableProps = {
 export const CoursesTable = ({ courses }: CoursesTableProps) => {
 
     const [search, setSearch] = useState("");
+
+    const { mutateAsync: handleDeleteCourse, isPending: isDeletePending } = useMutation({
+        mutationFn: deleteCourse,
+        onSuccess: () => {
+            toast.success("Curso excluído com sucesso!")
+        },
+    });
+
+    const { mutate: handleUpdateStatus, isPending: isStatusPending } = useMutation({
+        mutationFn: updateCourseStatus,
+        onSuccess: () => {
+            toast.success("Status do curso atualizado com sucesso!")
+        },
+        onError: () => {
+
+            toast.error("Erro ao atualizar status do curso.")
+        }
+    });
 
     const columns: ColumnDef<CourseWithModulesAndTags>[] = [
         {
@@ -104,17 +126,24 @@ export const CoursesTable = ({ courses }: CoursesTableProps) => {
             header: "",
             cell: ({ row }) => {
                 const courses = row.original;
+                const status = courses.status;
+                const isPublished = status === "PUBLISHED";
                 return (
                     <div className="flex items-center gap-2 justify-end">
-                        <Tooltip content="Alterar status para publicado">
-                            <Button variant="outline" size="icon">
-                                <Send />
+                        <Tooltip content={`Alterar status para ${isPublished ? "rascunho" : "publicado"}`}>
+                            <Button variant="ghost" size="icon" onClick={() => handleUpdateStatus({
+                                courseId: courses.id,
+                                status: isPublished ? "DRAFT" : "PUBLISHED"
+                            })}
+                                disabled={isStatusPending}>
+                                {isPublished ? < Archive /> : <Send />}
+
                             </Button>
                         </Tooltip>
 
                         <Tooltip content="Editar Curso">
                             <Link href={`/admin/courses/edit/${courses.id}`}>
-                                <Button variant="outline" size="icon">
+                                <Button variant="ghost" size="icon">
                                     <Pencil />
                                 </Button>
                             </Link>
@@ -122,9 +151,15 @@ export const CoursesTable = ({ courses }: CoursesTableProps) => {
 
 
                         <Tooltip content="Excluir Curso">
-                            <Button variant="outline" size="icon">
-                                <Trash2 />
-                            </Button>
+                            <AlertDialog
+                                title="Excluir Curso"
+                                description="Tem certeza que deseja excluir este curso?"
+                                onConfirm={() => handleDeleteCourse(courses.id)}
+                            >
+                                <Button variant="ghost" size="icon" disabled={isDeletePending}>
+                                    <Trash2 />
+                                </Button>
+                            </AlertDialog>
                         </Tooltip>
 
                     </div>

@@ -1,5 +1,6 @@
 "use server"
 
+import { checkRole } from "@/lib/clerk"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@clerk/nextjs/server"
 
@@ -54,4 +55,35 @@ export async function getUser(throwError = true): Promise<FilledUser | EmptyUser
         clerkUserId: userId,
         userId: user.id
     }
+}
+
+export const getAdminUsers = async (): Promise<AdminUser[]> => {
+    const isAdmin = await checkRole("admin")
+
+    if (!isAdmin) {
+        throw new Error("Unauthorized")
+    }
+
+    const users = await prisma.user.findMany({
+        include: {
+            _count: {
+                select: {
+                    courses: true,
+                    completedLesson: true
+
+                }
+            }
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+    })
+
+    return users.map(({ _count, ...user }) => ({
+        ...user,
+        purchasedCourses: _count.courses,
+        completedCourses: _count.completedLesson
+    }))
+
+
 }

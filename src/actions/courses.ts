@@ -9,6 +9,7 @@ import slugify from "slugify"
 import { revalidatePath } from "next/cache";
 import { deleteFile, uploadFile } from "./upload";
 import z from "zod";
+import { CourseStatus } from "@/generated/prisma";
 
 type GetCoursesPayload = {
     query: string;
@@ -418,4 +419,45 @@ export const revalidateCourseDetails = async (courseId: string) => {
 
 
     revalidatePath(`/courses/details/${course.slug}`)
+}
+
+type updateCourseStatusPayload = {
+    courseId: string;
+    status: CourseStatus;
+}
+
+export const updateCourseStatus = async ({ courseId, status }: updateCourseStatusPayload) => {
+
+    const isAdmin = await checkRole("admin");
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const course = await prisma.course.update({
+        where: { id: courseId },
+        data: { status }
+    })
+
+    revalidatePath("/")
+    revalidatePath("/admin/courses")
+
+    return course
+}
+
+
+export const deleteCourse = async (courseId: string) => {
+    const isAdmin = await checkRole("admin");
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const course = await prisma.course.findUnique({
+        where: { id: courseId }
+    })
+
+    if (!course) throw new Error("Course not found");
+
+    await prisma.course.delete({
+        where: { id: courseId }
+    })
+    await deleteFile(course.thumbnail)
+
+    revalidatePath("/")
+    revalidatePath("/admin/courses")
 }
