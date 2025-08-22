@@ -10,6 +10,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
+import { SendNotificationDialog } from "./send-notification-dialog";
 
 type UsersTableProps = {
     users: AdminUser[]
@@ -18,6 +19,7 @@ type UsersTableProps = {
 export const UsersTable = ({ users }: UsersTableProps) => {
 
     const [search, setSearch] = useState("")
+    const [showNotificationDialog, setShowNotificationDialog] = useState(false)
 
     const filteredUsers = useMemo(() => {
         return users.filter((user) => {
@@ -79,13 +81,14 @@ export const UsersTable = ({ users }: UsersTableProps) => {
                     onChange={({ target }) => setSearch(target.value)}
                 />
 
-                <Button>
+                <Button onClick={() => setShowNotificationDialog(true)}>
 
                     Enviar Notificacao
                 </Button>
             </div>
 
             <DataTable columns={columns} data={filteredUsers} />
+            <SendNotificationDialog open={showNotificationDialog} setOpen={setShowNotificationDialog} />
         </>
     );
 };

@@ -34,3 +34,13 @@ type AdminUser = User & {
     purchasedCourses: number;
     completedCourses: number;
 }
+
+type AdminComments = LessonComment & {
+    user: User;
+    lesson: CourseLesson & {
+        module: CourseModule & {
+            course: Course;
+        };
+    };
+    repliesCount: number;
+}

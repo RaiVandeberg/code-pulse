@@ -100,3 +100,41 @@ export const deleteLessonComment = async (commentId: string) => {
         where: { id: commentId }
     })
 }
+
+export const getAdminComments = async (): Promise<AdminComments[]> => {
+
+    const isAdmin = await checkRole("admin")
+    if (!isAdmin) {
+        throw new Error("Você não tem permissão para acessar os comentários")
+    }
+
+    const comments = await prisma.lessonComment.findMany({
+        where: { parentId: null },
+        include: {
+            user: true,
+            lesson: {
+                include: {
+                    module: {
+                        include: {
+                            course: true
+                        }
+                    }
+                }
+            },
+            _count: {
+                select: {
+                    replies: true
+                }
+            }
+        },
+        orderBy: {
+            createdAt: "asc"
+        }
+    })
+
+    return comments.map(({ _count, ...comment }) => ({
+        ...comment,
+        repliesCount: _count.replies
+    }))
+
+}
