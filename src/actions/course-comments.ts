@@ -83,7 +83,8 @@ export const createLessonComment = async ({ courseSlug, lessonId, content, paren
 
         const parentUserId = parentComment?.userId
 
-        if (parentUserId) {
+        if (parentUserId && parentUserId !== userId) {
+            // notify comment owner
             await prisma.notification.create({
                 data: {
                     userId: parentUserId,
