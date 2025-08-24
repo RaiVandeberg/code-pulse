@@ -3,6 +3,7 @@
 import { checkRole } from "@/lib/clerk"
 import { prisma } from "@/lib/prisma"
 import { createNotificationSchema, CreateNotificationSchema } from "@/server/schemas/notification"
+import { getUser } from "./user";
 
 
 export const sendNotifications = async (rawData: CreateNotificationSchema) => {
@@ -27,3 +28,31 @@ export const sendNotifications = async (rawData: CreateNotificationSchema) => {
         })),
     });
 };
+
+export const getNotifications = async () => {
+
+    const { userId } = await getUser()
+    const notifications = await prisma.notification.findMany({
+        where: {
+            userId,
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+
+    return notifications;
+};
+
+export const readAllNotification = async () => {
+    const { userId } = await getUser()
+    await prisma.notification.updateMany({
+        where: {
+            userId,
+            readAt: null,
+        },
+        data: {
+            readAt: new Date(),
+        },
+    });
+}
