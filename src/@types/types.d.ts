@@ -45,3 +45,11 @@ type AdminComments = LessonComment & {
     };
     repliesCount: number;
 }
+
+type RankingUser = {
+    position: number;
+    id: string;
+    name: string;
+    imageUrl?: string | null;
+    completedLessons: number;
+}
