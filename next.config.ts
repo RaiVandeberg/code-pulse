@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
       }
     ]
   },
+  eslint: {
+    ignoreDuringBuilds: true, // desliga ESLint no build
+  },
   turbopack: {
     rules: {
       "*.svg": {

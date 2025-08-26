@@ -2,6 +2,8 @@ import { getRanking } from "@/actions/ranking";
 import { RankingTable } from "@/components/pages/ranking/ranking-table";
 import { Crown } from "lucide-react";
 
+
+export const revalidate = 3600; // 1 hour
 export default async function RankingPage() {
     const ranking = await getRanking();
     return <>

@@ -10,6 +10,8 @@ import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { CourseProgress } from "@/components/pages/courses/course-details/course-progress";
 import { BackButton } from "@/components/ui/back-button";
+import { title } from "process";
+import { Metadata } from "next";
 
 type CourseDetailsPageProps = {
     params: Promise<{
@@ -17,6 +19,25 @@ type CourseDetailsPageProps = {
     }>
 }
 
+export async function generateMetadata({ params }: CourseDetailsPageProps): Promise<Metadata> {
+    const { slug } = await params;
+    const { course } = await getCourse(slug)
+
+    if (!course) {
+        return {
+            title: "Curso não encontrado"
+        }
+    }
+
+    return {
+        title: course.title,
+        description: course.shortDescription,
+        openGraph: {
+            images: [course.thumbnail]
+        }
+    }
+
+}
 export default async function CourseDetailsPage({ params }: CourseDetailsPageProps) {
     const { slug } = await params;
     const { course } = await getCourse(slug)

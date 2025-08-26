@@ -17,7 +17,13 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Code Pulse",
+  title: {
+    template: "%s - Code Pulse",
+    default: "Code Pulse"
+  },
+  icons: {
+    icon: "/favicon.svg"
+  }
 
 };
 
