@@ -12,6 +12,7 @@ import { CourseProgress } from "@/components/pages/courses/course-details/course
 import { BackButton } from "@/components/ui/back-button";
 import { title } from "process";
 import { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
 
 type CourseDetailsPageProps = {
     params: Promise<{
@@ -38,6 +39,20 @@ export async function generateMetadata({ params }: CourseDetailsPageProps): Prom
     }
 
 }
+
+export async function generateStaticParams() {
+    const courses = await prisma.course.findMany({
+        select: {
+            slug: true
+        }
+    })
+
+
+    return courses.map((course) => ({
+        slug: course.slug
+    }))
+}
+
 export default async function CourseDetailsPage({ params }: CourseDetailsPageProps) {
     const { slug } = await params;
     const { course } = await getCourse(slug)
