@@ -13,6 +13,7 @@ import { BackButton } from "@/components/ui/back-button";
 import { title } from "process";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { EditorPreview } from "@/components/ui/editor";
 
 type CourseDetailsPageProps = {
     params: Promise<{
@@ -135,7 +136,11 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
                         </TabsList>
 
                         <TabsContent value="overview">
-                            <p className="opacity-90 mt-4">{course.description}</p>
+
+                            <EditorPreview
+                                value={course.description}
+                                className="opacity-90 mt-4" />
+
                             <Separator className="my-6" />
                             <div className="grid grid-cols-2 gap-6">
                                 {details.map((detail) => (

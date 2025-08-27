@@ -156,6 +156,10 @@
   outline: none !important;
 }
 
+.editor-preview .ProseMirror {
+  @apply !p-0;
+}
+
 h1.tiptap-heading {
   @apply mb-6 mt-8 text-4xl font-bold;
 }
