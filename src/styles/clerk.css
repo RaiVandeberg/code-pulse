@@ -65,7 +65,7 @@ p[data-localization-key="userProfile.profilePage.successMessage"] {
 }
 
 .cl-footerActionLink {
-    @apply text-accent-foreground underline hover:text-accent-foreground/90;
+    @apply text-primary underline hover:text-primary/90;
 }
 
 .cl-otpCodeFieldInput {
